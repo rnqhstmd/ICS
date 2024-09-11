@@ -3,9 +3,7 @@ package org.example.sqi_images.auth.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
 
-@Getter
 public record RegisterDto(
         @NotBlank(message = "사내 이메일을 입력해주세요.")
         @Pattern(regexp = "^[a-z]+\\.[a-z]+$", message = "이메일 형식이 올바르지 않습니다.")
