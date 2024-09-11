@@ -3,7 +3,6 @@ package org.example.sqi_images.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.utils.PasswordHashEncryption;
 import org.example.sqi_images.common.exception.ConflictException;
-import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.auth.dto.RegisterDto;
 import org.example.sqi_images.employee.repository.EmployeeRepository;
@@ -20,13 +19,13 @@ public class AuthService {
     private final PasswordHashEncryption passwordHashEncryption;
 
     public void register(RegisterDto registerDto) {
-        String name = registerDto.getName();
+        String name = registerDto.name();
         validateIsDuplicatedName(name);
 
-        String email = registerDto.getEmail() + "@sqisoft.com";
+        String email = registerDto.email() + "@sqisoft.com";
         validateIsDuplicatedEmail(email);
 
-        String plainPassword = registerDto.getPassword();
+        String plainPassword = registerDto.password();
         String encryptedPassword = passwordHashEncryption.encrypt(plainPassword);
 
         Employee newEmployee = new Employee(email, encryptedPassword, name);
