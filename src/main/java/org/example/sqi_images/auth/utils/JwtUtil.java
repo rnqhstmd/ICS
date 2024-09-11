@@ -12,7 +12,7 @@ import static org.example.sqi_images.common.exception.type.ErrorType.INVALID_JWT
 
 @Slf4j
 @AllArgsConstructor
-public class JwtEncoder {
+public class JwtUtil {
 
     public static final String TOKEN_TYPE = "Bearer ";
 
