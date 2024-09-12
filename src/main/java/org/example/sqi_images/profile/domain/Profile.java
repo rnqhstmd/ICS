@@ -17,19 +17,19 @@ import org.example.sqi_images.employee.domain.Employee;
 public class Profile extends BaseEntity {
 
     @Lob
-    @Column(nullable = false)
+    @Column
     private byte[] photo;
 
-    @Column(nullable = false)
+    @Column
     private String department;
 
-    @Column(nullable = false)
+    @Column
     private String part;
 
-    @Column(nullable = false)
+    @Column
     private String languages;
 
-    @Column(nullable = false)
+    @Column
     private String frameworks;
 
     @OneToOne(fetch = FetchType.LAZY)
