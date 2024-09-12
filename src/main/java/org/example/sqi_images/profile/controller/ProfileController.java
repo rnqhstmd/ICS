@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.authentication.annotation.Authenticated;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.profile.dto.request.CreateProfileDto;
+import org.example.sqi_images.profile.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.profile.dto.response.ProfileResponseList;
 import org.example.sqi_images.profile.service.ProfileService;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,11 @@ public class ProfileController {
     public ResponseEntity<ProfileResponseList> getAllProfiles() {
         ProfileResponseList profiles = profileService.getAllProfiles();
         return ResponseEntity.ok(profiles);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfileDetailResponse> getProfileDetail(@PathVariable Long id) {
+        ProfileDetailResponse profileDetail = profileService.getProfileDetail(id);
+        return ResponseEntity.ok(profileDetail);
     }
 }
