@@ -1,12 +1,12 @@
 package org.example.sqi_images.employee.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.sqi_images.common.domain.BaseEntity;
+import org.example.sqi_images.profile.domain.Profile;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -22,4 +22,13 @@ public class Employee extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Profile profile;
+
+    public Employee(String email, String password, String name) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
 }

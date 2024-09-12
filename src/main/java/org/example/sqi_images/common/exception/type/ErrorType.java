@@ -23,8 +23,9 @@ public enum ErrorType {
     METHOD_NOT_ALLOWED_ERROR(40500, "잘못된 HTTP 메서드입니다."),
 
     // CONFLICT
-    DUPLICATED_EMAIL(40900, "존재하는 이메일입니다."),
-    DUPLICATED_NAME(40901, "존재하는 이름입니다."),
+    DUPLICATED_EMAIL(40900, "사용중인 이메일입니다."),
+    DUPLICATED_NAME(40901, "사용중인 이름입니다."),
+    PROFILE_ALREADY_EXISTS_ERROR(40902, "프로필이 이미 존재합니다."),
 
     // VALIDATION
     NOT_NULL_VALID_ERROR(90100, "필수값이 누락되었습니다."),

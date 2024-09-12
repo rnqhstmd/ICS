@@ -17,12 +17,14 @@ public class AuthenticationConfig implements WebMvcConfigurer {
     private final AuthenticationInterceptor authenticationInterceptor;
     private final AuthenticatedEmployeeArgumentResolver authenticatedEmployeeArgumentResolver;
     private static final String ADD_AUTH_API_PATH = "/api/auth/logout";
+    private static final String ADD_PROFILE_API_PATH = "/api/profiles/**";
     private static final String[] EXCLUDE_AUTH_API_PATH = {"/api/auth/login", "/api/auth/sign-up"};
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns(ADD_AUTH_API_PATH)
+                .addPathPatterns(ADD_PROFILE_API_PATH)
                 .excludePathPatterns(EXCLUDE_AUTH_API_PATH);
     }
 
