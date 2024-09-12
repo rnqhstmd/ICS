@@ -30,8 +30,5 @@ public class Employee extends BaseEntity {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.profile = Profile.builder()
-                .employee(this)
-                .build();
     }
 }
