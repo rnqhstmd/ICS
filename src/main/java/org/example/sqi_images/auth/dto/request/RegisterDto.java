@@ -1,4 +1,4 @@
-package org.example.sqi_images.auth.dto;
+package org.example.sqi_images.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
