@@ -1,15 +1,19 @@
 package org.example.sqi_images.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.sqi_images.auth.dto.request.LoginDto;
+import org.example.sqi_images.auth.dto.response.TokenDto;
 import org.example.sqi_images.auth.utils.PasswordHashEncryption;
+import org.example.sqi_images.common.authentication.AccessTokenProvider;
 import org.example.sqi_images.common.exception.ConflictException;
+import org.example.sqi_images.common.exception.NotFoundException;
+import org.example.sqi_images.common.exception.UnauthorizedException;
 import org.example.sqi_images.employee.domain.Employee;
-import org.example.sqi_images.auth.dto.RegisterDto;
+import org.example.sqi_images.auth.dto.request.RegisterDto;
 import org.example.sqi_images.employee.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.DUPLICATED_EMAIL;
-import static org.example.sqi_images.common.exception.type.ErrorType.DUPLICATED_NAME;
+import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +21,13 @@ public class AuthService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordHashEncryption passwordHashEncryption;
+    private final AccessTokenProvider accessTokenProvider;
 
     public void register(RegisterDto registerDto) {
         String name = registerDto.name();
         validateIsDuplicatedName(name);
 
+        // TODO Refactor - constant 폴더 안에 사용할 변수 선언하여 사용하기
         String email = registerDto.email() + "@sqisoft.com";
         validateIsDuplicatedEmail(email);
 
@@ -30,6 +36,26 @@ public class AuthService {
 
         Employee newEmployee = new Employee(email, encryptedPassword, name);
         employeeRepository.save(newEmployee);
+    }
+
+    public TokenDto login(LoginDto loginDto) {
+        Employee employee = findExistingUserByEmail(loginDto.email() + "@sqisoft.com");
+
+        validateIsPasswordMatches(loginDto.password(), employee.getPassword());
+
+        String accessToken = accessTokenProvider.createToken(String.valueOf(employee.getId()));
+        return new TokenDto(accessToken);
+    }
+
+    public Employee findExistingUserByEmail(String email) {
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+    }
+
+    public void validateIsPasswordMatches(String requestedPassword, String userPassword) {
+        if (!passwordHashEncryption.matches(requestedPassword, userPassword)) {
+            throw new UnauthorizedException(INVALID_CREDENTIALS_ERROR);
+        }
     }
 
     public void validateIsDuplicatedName(String name) {
