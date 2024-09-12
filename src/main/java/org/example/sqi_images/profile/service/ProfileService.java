@@ -2,9 +2,12 @@ package org.example.sqi_images.profile.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.exception.ForbiddenException;
+import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.employee.domain.Employee;
+import org.example.sqi_images.employee.repository.EmployeeRepository;
 import org.example.sqi_images.profile.domain.Profile;
 import org.example.sqi_images.profile.dto.request.CreateProfileDto;
+import org.example.sqi_images.profile.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.profile.dto.response.ProfileResponse;
 import org.example.sqi_images.profile.dto.response.ProfileResponseList;
 import org.example.sqi_images.profile.repository.ProfileRepository;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NOT_FOUND_ERROR;
 import static org.example.sqi_images.common.exception.type.ErrorType.PROFILE_ALREADY_EXISTS_ERROR;
 
 @Service
@@ -22,7 +26,11 @@ import static org.example.sqi_images.common.exception.type.ErrorType.PROFILE_ALR
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final EmployeeRepository employeeRepository;
 
+    /**
+     * 프로필 생성
+     */
     public void createProfile(Employee employee, CreateProfileDto createProfileDto, MultipartFile file) throws IOException {
         // 프로필 이미 생성했던 직원 검증
         if (employee.getProfile() != null) {
@@ -43,6 +51,9 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
+    /**
+     * 프로필 전체 조회
+     */
     @Transactional(readOnly = true)
     public ProfileResponseList getAllProfiles() {
         List<ProfileResponse> profiles = profileRepository.findAll().stream()
@@ -52,5 +63,24 @@ public class ProfileService {
                         profile.getPhoto()))
                 .toList();
         return ProfileResponseList.from(profiles);
+    }
+
+    /**
+     * 프로필 단건 조회
+     */
+    @Transactional(readOnly = true)
+    public ProfileDetailResponse getProfileDetail(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+        Profile profile = employee.getProfile();
+        return new ProfileDetailResponse(
+                employee.getName(),
+                employee.getEmail(),
+                profile.getDepartment(),
+                profile.getPart(),
+                profile.getLanguages(),
+                profile.getFrameworks(),
+                profile.getPhoto()
+        );
     }
 }
