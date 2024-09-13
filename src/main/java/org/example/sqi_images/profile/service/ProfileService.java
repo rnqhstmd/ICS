@@ -7,10 +7,12 @@ import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.repository.EmployeeRepository;
 import org.example.sqi_images.profile.domain.Profile;
 import org.example.sqi_images.profile.dto.request.CreateProfileDto;
+import org.example.sqi_images.profile.dto.response.ImageDataResponse;
 import org.example.sqi_images.profile.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.profile.dto.response.ProfileResponse;
 import org.example.sqi_images.profile.dto.response.ProfileResponseList;
 import org.example.sqi_images.profile.repository.ProfileRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NOT_FOUND_ERROR;
-import static org.example.sqi_images.common.exception.type.ErrorType.PROFILE_ALREADY_EXISTS_ERROR;
+import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class ProfileService {
     /**
      * 프로필 생성
      */
+    @Transactional
     public void createProfile(Employee employee, CreateProfileDto createProfileDto, MultipartFile file) throws IOException {
         // 프로필 이미 생성했던 직원 검증
         if (employee.getProfile() != null) {
@@ -49,6 +51,20 @@ public class ProfileService {
                 employee
         );
         profileRepository.save(profile);
+    }
+
+    /**
+     * 프로필 이미지 조회
+     */
+    public ImageDataResponse getProfileImage(Long profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NotFoundException(PROFILE_NOT_FOUND_ERROR));
+
+        if (profile.getPhoto() == null) {
+            throw new NotFoundException(IMAGE_NOT_FOUND_ERROR);
+        }
+
+        return ImageDataResponse.of(profile.getPhoto(), "image/png");
     }
 
     /**
@@ -73,7 +89,7 @@ public class ProfileService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
         Profile profile = employee.getProfile();
-        return new ProfileDetailResponse(
+        return  ProfileDetailResponse.of(
                 employee.getName(),
                 employee.getEmail(),
                 profile.getDepartment(),
