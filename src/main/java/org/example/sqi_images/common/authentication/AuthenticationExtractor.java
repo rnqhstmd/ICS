@@ -11,7 +11,6 @@ import static org.example.sqi_images.common.constant.Constants.TOKEN_COOKIE_NAME
 import static org.example.sqi_images.common.exception.type.ErrorType.COOKIE_NOT_FOUND_ERROR;
 
 
-@Slf4j
 public class AuthenticationExtractor {
 
     public static String extract(final HttpServletRequest request) {
