@@ -13,6 +13,7 @@ import org.example.sqi_images.auth.dto.request.RegisterDto;
 import org.example.sqi_images.employee.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
+import static org.example.sqi_images.common.constant.Constants.SQISOFT_EMAIL;
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
 @Service
@@ -27,8 +28,7 @@ public class AuthService {
         String name = registerDto.name();
         validateIsDuplicatedName(name);
 
-        // TODO Refactor - constant 폴더 안에 사용할 변수 선언하여 사용하기
-        String email = registerDto.email() + "@sqisoft.com";
+        String email = registerDto.email() + SQISOFT_EMAIL;
         validateIsDuplicatedEmail(email);
 
         String plainPassword = registerDto.password();
@@ -39,7 +39,7 @@ public class AuthService {
     }
 
     public TokenDto login(LoginDto loginDto) {
-        Employee employee = findExistingUserByEmail(loginDto.email() + "@sqisoft.com");
+        Employee employee = findExistingUserByEmail(loginDto.email() + SQISOFT_EMAIL);
 
         validateIsPasswordMatches(loginDto.password(), employee.getPassword());
 
