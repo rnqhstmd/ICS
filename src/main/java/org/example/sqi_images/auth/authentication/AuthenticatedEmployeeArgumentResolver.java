@@ -1,7 +1,7 @@
-package org.example.sqi_images.common.authentication;
+package org.example.sqi_images.auth.authentication;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.authentication.annotation.Authenticated;
+import org.example.sqi_images.auth.authentication.annotation.Authenticated;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

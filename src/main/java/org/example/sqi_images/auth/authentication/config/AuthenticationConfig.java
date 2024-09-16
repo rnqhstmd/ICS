@@ -1,8 +1,8 @@
-package org.example.sqi_images.common.authentication.config;
+package org.example.sqi_images.auth.authentication.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.authentication.AuthenticatedEmployeeArgumentResolver;
-import org.example.sqi_images.common.authentication.AuthenticationInterceptor;
+import org.example.sqi_images.auth.authentication.AuthenticatedEmployeeArgumentResolver;
+import org.example.sqi_images.auth.authentication.AuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

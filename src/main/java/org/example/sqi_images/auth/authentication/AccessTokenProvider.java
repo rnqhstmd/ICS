@@ -1,4 +1,4 @@
-package org.example.sqi_images.common.authentication;
+package org.example.sqi_images.auth.authentication;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
