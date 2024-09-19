@@ -1,7 +1,7 @@
 package org.example.sqi_images.file.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.authentication.annotation.Authenticated;
+import org.example.sqi_images.auth.authentication.annotation.Authenticated;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.file.dto.request.FileInfoUploadDto;
 import org.example.sqi_images.file.dto.response.FileDownloadDto;

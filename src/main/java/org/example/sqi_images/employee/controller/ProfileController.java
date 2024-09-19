@@ -1,13 +1,13 @@
-package org.example.sqi_images.profile.controller;
+package org.example.sqi_images.employee.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.authentication.annotation.Authenticated;
+import org.example.sqi_images.auth.authentication.annotation.Authenticated;
 import org.example.sqi_images.employee.domain.Employee;
-import org.example.sqi_images.profile.dto.request.CreateProfileDto;
-import org.example.sqi_images.profile.dto.response.ImageDataResponse;
-import org.example.sqi_images.profile.dto.response.ProfileDetailResponse;
-import org.example.sqi_images.profile.dto.response.ProfileResponseList;
-import org.example.sqi_images.profile.service.ProfileService;
+import org.example.sqi_images.employee.dto.request.CreateProfileDto;
+import org.example.sqi_images.employee.dto.response.ImageDataResponse;
+import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
+import org.example.sqi_images.employee.dto.response.ProfileResponseList;
+import org.example.sqi_images.employee.service.ProfileService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

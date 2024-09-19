@@ -1,10 +1,11 @@
 package org.example.sqi_images.auth.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.sqi_images.common.authentication.AuthenticationExtractor;
 import org.springframework.http.ResponseCookie;
 
 import java.time.Duration;
+
+import static org.example.sqi_images.common.constant.Constants.TOKEN_COOKIE_NAME;
 
 public final class CookieUtil {
 
@@ -13,7 +14,7 @@ public final class CookieUtil {
     }
 
     public static void setCookie(HttpServletResponse response, String encodedToken) {
-        ResponseCookie cookie = ResponseCookie.from(AuthenticationExtractor.TOKEN_COOKIE_NAME, encodedToken)
+        ResponseCookie cookie = ResponseCookie.from(TOKEN_COOKIE_NAME, encodedToken)
                 .maxAge(Duration.ofMillis(1800000))
                 .path("/")
                 .httpOnly(true)

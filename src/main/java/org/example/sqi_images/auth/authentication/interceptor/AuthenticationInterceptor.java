@@ -1,8 +1,11 @@
-package org.example.sqi_images.common.authentication;
+package org.example.sqi_images.auth.authentication.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.sqi_images.auth.authentication.AccessTokenProvider;
+import org.example.sqi_images.auth.authentication.AuthenticationContext;
+import org.example.sqi_images.auth.authentication.AuthenticationExtractor;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.repository.EmployeeRepository;
