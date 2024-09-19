@@ -21,6 +21,7 @@ public enum ErrorType {
     PROFILE_NOT_FOUND_ERROR(40402, "해당 프로필을 찾을 수 없습니다."),
     IMAGE_NOT_FOUND_ERROR(40403, "해당 이미지를 찾을 수 없습니다."),
     FILE_NOT_FOUND_ERROR(40404, "해당 파일을 찾을 수 없습니다."),
+    DEPARTMENT_NOT_FOUND_ERROR(40405,"해당 부서를 찾을 수 없습니다."),
 
     // HTTP
     METHOD_NOT_ALLOWED_ERROR(40500, "잘못된 HTTP 메서드입니다."),
