@@ -3,7 +3,6 @@ package org.example.sqi_images.auth.authentication;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.example.sqi_images.auth.utils.JwtUtil;
 import org.example.sqi_images.common.exception.UnauthorizedException;
 
@@ -12,6 +11,10 @@ import static org.example.sqi_images.common.exception.type.ErrorType.COOKIE_NOT_
 
 
 public class AuthenticationExtractor {
+
+    private AuthenticationExtractor() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
     public static String extract(final HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
