@@ -1,4 +1,4 @@
-package org.example.sqi_images.profile.dto.response;
+package org.example.sqi_images.employee.dto.response;
 
 import java.util.List;
 

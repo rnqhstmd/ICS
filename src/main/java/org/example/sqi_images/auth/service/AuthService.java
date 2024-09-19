@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.dto.request.LoginDto;
 import org.example.sqi_images.auth.dto.response.TokenDto;
 import org.example.sqi_images.auth.utils.PasswordHashEncryption;
-import org.example.sqi_images.common.authentication.AccessTokenProvider;
+import org.example.sqi_images.auth.authentication.AccessTokenProvider;
 import org.example.sqi_images.common.exception.ConflictException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.UnauthorizedException;
