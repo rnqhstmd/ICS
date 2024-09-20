@@ -31,12 +31,13 @@ public class AuthenticationConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns(ADD_AUTH_API_PATH)
                 .addPathPatterns(ADD_PROFILE_API_PATH)
+                .addPathPatterns(ADD_FILE_API_PATH)
                 .excludePathPatterns(EXCLUDE_AUTH_API_PATH);
     }
 
     private void addDepartmentCheckInterceptor(final InterceptorRegistry registry) {
         registry.addInterceptor(departmentCheckInterceptor)
-                .addPathPatterns(ADD_DEPARTMENT_PATH);
+                .addPathPatterns(ADD_DEPARTMENT_API_PATH);
     }
 
     @Override
