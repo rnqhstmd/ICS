@@ -21,15 +21,21 @@ public class File extends BaseEntity {
 
     @Lob
     @Column(nullable = false)
-    private byte[] file;
+    private byte[] fileData;
 
     @Column(nullable = false)
-    private String contentType;
+    private String fileContentType;
+
+    @Column(nullable = false)
+    private String fileExtension;
 
     @Column(nullable = false)
     private long fileSize;
 
+    @Column(nullable = false)
+    private String formattedFileSize;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 }
