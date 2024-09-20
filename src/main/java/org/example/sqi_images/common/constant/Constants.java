@@ -1,7 +1,6 @@
 package org.example.sqi_images.common.constant;
 
 import java.util.List;
-
 public class Constants {
 
     // Employee
@@ -16,5 +15,8 @@ public class Constants {
     public static final List<String> EXCLUDE_AUTH_API_PATH = List.of("/api/auth/login", "/api/auth/sign-up");
 
     // Department
-    public static final String ADD_DEPARTMENT_PATH = "api/departments/**";
+    public static final String ADD_DEPARTMENT_API_PATH = "/api/departments/**";
+
+    // File
+    public static final String ADD_FILE_API_PATH = "/api/files/**";
 }
