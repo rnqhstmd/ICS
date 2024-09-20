@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorType {
 
+    // BAD_REQUEST
+    INVALID_PAGE_REQUEST(40000, "요청한 페이지 번호가 유효하지 않습니다."),
+
     // UNAUTHORIZED
     NOT_AUTHENTICATED_ERROR(40100, "인증되지 않았습니다."),
     INVALID_CREDENTIALS_ERROR(40101, "아이디나 비밀번호가 일치하지 않습니다."),
@@ -25,6 +28,11 @@ public enum ErrorType {
 
     // HTTP
     METHOD_NOT_ALLOWED_ERROR(40500, "잘못된 HTTP 메서드입니다."),
+
+    // MULTIPART
+    MEDIA_TYPE_NOT_SUPPORTED_ERROR(41500, "Content-Type 헤더가 지원되지 않는 미디어 타입을 지정하고 있습니다."),
+    MEDIA_TYPE_NOT_ACCEPTABLE_ERROR(40600, "Accept 헤더가 지원되지 않는 미디어 타입을 지정하고 있습니다."),
+    UPLOAD_FILE_SIZE_LIMIT_EXCEEDED(41300, "허용된 파일 크기를 초과했습니다."),
 
     // CONFLICT
     DUPLICATED_EMAIL(40900, "사용중인 이메일입니다."),
