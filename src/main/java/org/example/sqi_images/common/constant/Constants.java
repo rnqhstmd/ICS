@@ -14,9 +14,6 @@ public class Constants {
     public static final String ADD_PROFILE_API_PATH = "/api/profiles/**";
     public static final List<String> EXCLUDE_AUTH_API_PATH = List.of("/api/auth/login", "/api/auth/sign-up");
 
-    // Department
-    public static final String ADD_DEPARTMENT_API_PATH = "/api/departments/**";
-
-    // File
-    public static final String ADD_FILE_API_PATH = "/api/files/**";
+    // Drive
+    public static final String ADD_DRIVE_API_PATH = "/api/drives/**";
 }
