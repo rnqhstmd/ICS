@@ -1,7 +1,7 @@
 package org.example.sqi_images.employee.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.auth.authentication.annotation.Authenticated;
+import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
 import org.example.sqi_images.employee.dto.response.ImageDataResponse;
@@ -25,7 +25,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createProfile(@Authenticated Employee employee,
+    public ResponseEntity<String> createProfile(@AuthEmployee Employee employee,
                                                 @RequestPart(value = "data") CreateProfileDto createProfileDto,
                                                 @RequestPart(value = "image") MultipartFile file) throws IOException {
         profileService.createProfile(employee, createProfileDto, file);
