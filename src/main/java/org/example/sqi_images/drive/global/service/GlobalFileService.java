@@ -6,7 +6,7 @@ import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.repository.DepartmentRepository;
+import org.example.sqi_images.department.domain.repository.DepartmentRepository;
 import org.example.sqi_images.drive.common.dto.request.FileInfoUploadDto;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.example.sqi_images.drive.common.dto.response.FileListDto;

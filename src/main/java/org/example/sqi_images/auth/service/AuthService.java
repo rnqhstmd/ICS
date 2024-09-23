@@ -10,7 +10,7 @@ import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.UnauthorizedException;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.auth.dto.request.RegisterDto;
-import org.example.sqi_images.employee.repository.EmployeeRepository;
+import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import static org.example.sqi_images.common.constant.Constants.SQISOFT_EMAIL;

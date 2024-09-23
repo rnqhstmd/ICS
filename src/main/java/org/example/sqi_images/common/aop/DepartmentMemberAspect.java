@@ -7,7 +7,7 @@ import org.example.sqi_images.auth.authentication.AuthenticationContext;
 import org.example.sqi_images.auth.authentication.annotation.DepartmentMember;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
-import org.example.sqi_images.department.repository.DepartmentRepository;
+import org.example.sqi_images.department.domain.repository.DepartmentRepository;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.department.domain.repository.DepartmentFileRepository;
 import org.example.sqi_images.employee.domain.Employee;
