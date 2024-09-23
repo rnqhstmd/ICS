@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.sqi_images.common.domain.BaseEntity;
 import org.example.sqi_images.common.domain.DepartmentType;
+import org.example.sqi_images.drive.department.domain.DepartmentFile;
+import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.employee.domain.Employee;
 
 import java.util.ArrayList;
@@ -18,10 +20,16 @@ import java.util.List;
 @Table(name = "departments")
 public class Department extends BaseEntity {
 
-    @Column
+    @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private DepartmentType departmentType;
 
     @OneToMany(mappedBy = "department")
     private List<Employee> employees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GlobalFile> globalFiles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DepartmentFile> departmentFiles = new ArrayList<>();
 }
