@@ -1,4 +1,4 @@
-package org.example.sqi_images.file.dto.request;
+package org.example.sqi_images.drive.common.dto.request;
 
 public record FileInfoUploadDto(
         String fileName

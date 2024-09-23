@@ -1,8 +1,8 @@
-package org.example.sqi_images.file.util;
+package org.example.sqi_images.drive.common.util;
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypes;
-import org.example.sqi_images.file.dto.response.FileDownloadDto;
+import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
