@@ -18,6 +18,9 @@ public enum ErrorType {
     INVALID_JWT_ERROR(40104, "인증 정보가 유효하지 않습니다."),
     TOKEN_EXPIRED_ERROR(40105, "인증에 필요한 토큰이 만료되었습니다."),
 
+    // FORBIDDEN
+    DRIVE_ACCESS_DENIED_ERROR(40300, "해당 부서 드라이브의 접근 권한이 없습니다."),
+
     // NOT_FOUND
     NO_RESOURCE_ERROR(40400, "해당 리소스를 찾을 수 없습니다."),
     EMPLOYEE_NOT_FOUND_ERROR(40401, "해당 사원을 찾을 수 없습니다."),
