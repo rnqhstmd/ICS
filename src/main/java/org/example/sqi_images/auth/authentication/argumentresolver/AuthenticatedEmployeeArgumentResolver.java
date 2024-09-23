@@ -1,7 +1,8 @@
-package org.example.sqi_images.auth.authentication;
+package org.example.sqi_images.auth.authentication.argumentresolver;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.auth.authentication.annotation.Authenticated;
+import org.example.sqi_images.auth.authentication.AuthenticationContext;
+import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -16,7 +17,7 @@ public class AuthenticatedEmployeeArgumentResolver implements HandlerMethodArgum
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Authenticated.class);
+        return parameter.hasParameterAnnotation(AuthEmployee.class);
     }
 
     @Override

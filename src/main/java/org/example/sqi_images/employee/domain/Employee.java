@@ -6,8 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.sqi_images.common.domain.*;
 import org.example.sqi_images.department.domain.Department;
+import org.example.sqi_images.drive.department.domain.DepartmentFile;
+import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
-import org.example.sqi_images.file.domain.File;
 
 import java.util.List;
 
@@ -48,7 +49,10 @@ public class Employee extends BaseEntity {
     private Department department;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> files;
+    private List<DepartmentFile> departmentFiles;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GlobalFile> globalFiles;
 
     public Employee(String email, String password, String name) {
         this.email = email;
