@@ -3,6 +3,7 @@ package org.example.sqi_images.drive.department.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
+import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.department.domain.Department;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.DEPARTMENT_NOT_FOUND_ERROR;
+import static org.example.sqi_images.common.exception.type.ErrorType.UPLOADED_FILE_EMPTY_ERROR;
 import static org.example.sqi_images.drive.common.util.FileUtil.*;
 
 @Service
@@ -33,9 +35,12 @@ public class DepartmentFileService {
 
     @Transactional
     public void uploadDepartmentFile(Employee employee, Long departmentId, FileInfoUploadDto fileInfoUploadDto, MultipartFile file) throws IOException {
-        String fileName = generateUniqueFileName(fileInfoUploadDto.fileName());
+        if (file.isEmpty()) {
+            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
+        }
         byte[] fileData = file.getBytes();
         long fileSize = file.getSize();
+        String fileName = generateUniqueFileName(fileInfoUploadDto.fileName());
         String formattedFileSize = formatFileSize(fileSize);
         Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
 

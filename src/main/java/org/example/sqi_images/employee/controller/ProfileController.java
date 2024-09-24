@@ -1,5 +1,6 @@
 package org.example.sqi_images.employee.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.employee.domain.Employee;
@@ -24,8 +25,8 @@ public class ProfileController {
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createProfile(@AuthEmployee Employee employee,
-                                                @RequestPart(value = "data") CreateProfileDto createProfileDto,
-                                                @RequestPart(value = "image") MultipartFile file) throws IOException {
+                                                @RequestPart(value = "image") MultipartFile file,
+                                                @RequestPart(value = "data") @Valid CreateProfileDto createProfileDto) throws IOException {
         profileService.createProfile(employee, createProfileDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body("프로필 생성 완료");
     }

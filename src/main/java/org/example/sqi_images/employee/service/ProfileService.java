@@ -2,6 +2,7 @@ package org.example.sqi_images.employee.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.domain.DepartmentType;
+import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.department.domain.Department;
@@ -44,6 +45,11 @@ public class ProfileService {
         if (employee.getDepartment() != null) {
             throw new ForbiddenException(PROFILE_ALREADY_EXISTS_ERROR);
         }
+
+        if (file.isEmpty()) {
+            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
+        }
+
         DepartmentType departmentType = DepartmentType.fromValue(createProfileDto.department());
         Department department = departmentRepository.findByDepartmentType(departmentType)
                 .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
