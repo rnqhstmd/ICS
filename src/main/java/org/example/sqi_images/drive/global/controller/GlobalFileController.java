@@ -1,5 +1,6 @@
 package org.example.sqi_images.drive.global.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
@@ -29,7 +30,7 @@ public class GlobalFileController {
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadFile(@AuthEmployee Employee employee,
                                              @RequestPart("file") MultipartFile file,
-                                             @RequestPart("fileName") FileInfoUploadDto fileInfoUploadDto) throws IOException {
+                                             @RequestPart("fileName") @Valid FileInfoUploadDto fileInfoUploadDto) throws IOException {
         globalFileService.uploadGlobalFile(employee, fileInfoUploadDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body("전체 공유 드라이브 파일 업로드 완료");
     }
