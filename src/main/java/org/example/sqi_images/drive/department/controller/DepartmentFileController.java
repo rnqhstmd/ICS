@@ -1,5 +1,6 @@
 package org.example.sqi_images.drive.department.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.aop.annotation.DepartmentMember;
@@ -32,8 +33,7 @@ public class DepartmentFileController {
     public ResponseEntity<String> uploadDepartmentFile(@AuthEmployee Employee employee,
                                                        @PathVariable Long departmentId,
                                                        @RequestPart("file") MultipartFile file,
-                                                       @RequestPart("fileName") FileInfoUploadDto fileInfoUploadDto)
-            throws IOException {
+                                                       @RequestPart("fileName") @Valid FileInfoUploadDto fileInfoUploadDto) throws IOException {
         departmentFileService.uploadDepartmentFile(employee, departmentId, fileInfoUploadDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body("부서별 공유 드라이브 파일 업로드 완료");
     }
