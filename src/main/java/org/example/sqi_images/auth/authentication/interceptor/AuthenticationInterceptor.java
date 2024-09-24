@@ -8,7 +8,7 @@ import org.example.sqi_images.auth.authentication.AuthenticationContext;
 import org.example.sqi_images.auth.authentication.AuthenticationExtractor;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.employee.domain.Employee;
-import org.example.sqi_images.employee.repository.EmployeeRepository;
+import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

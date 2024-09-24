@@ -2,7 +2,7 @@ package org.example.sqi_images.drive.department.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
-import org.example.sqi_images.auth.authentication.annotation.DepartmentMember;
+import org.example.sqi_images.common.aop.annotation.DepartmentMember;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.common.dto.request.FileInfoUploadDto;

@@ -1,4 +1,4 @@
-package org.example.sqi_images.auth.authentication.annotation;
+package org.example.sqi_images.common.aop.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,15 +1,11 @@
 package org.example.sqi_images.employee.dto.response;
 
-import jakarta.persistence.Lob;
-import lombok.Builder;
 
-
-@Builder
 public record ProfileResponse(
         Long profileId,
         String name,
-        @Lob byte[] photo) {
-    public static ProfileResponse of(Long profileId, String name, byte[] photo) {
-        return new ProfileResponse(profileId, name, photo);
+        String photoUrl ) {
+    public static ProfileResponse of(Long profileId, String name, String photoUrl) {
+        return new ProfileResponse(profileId, name, photoUrl);
     }
 }

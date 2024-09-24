@@ -1,4 +1,4 @@
-package org.example.sqi_images.department.repository;
+package org.example.sqi_images.department.domain.repository;
 
 import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.department.domain.Department;

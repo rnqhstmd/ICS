@@ -1,4 +1,4 @@
-package org.example.sqi_images.employee.repository;
+package org.example.sqi_images.employee.domain.repository;
 
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;

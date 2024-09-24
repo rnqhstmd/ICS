@@ -12,7 +12,7 @@ public record ProfileDetailResponse(
         PartType partType,
         LanguageType languageType,
         FrameworkType frameworkType,
-        byte[] photo
+        String photoUrl
 ) {
     public static ProfileDetailResponse of(String name,
                                            String email,
@@ -20,7 +20,7 @@ public record ProfileDetailResponse(
                                            PartType partType,
                                            LanguageType languageType,
                                            FrameworkType frameworkType,
-                                           byte[] photo) {
-        return new ProfileDetailResponse(name, email, department, partType, languageType, frameworkType, photo);
+                                           String photoUrl) {
+        return new ProfileDetailResponse(name, email, department, partType, languageType, frameworkType, photoUrl);
     }
 }
