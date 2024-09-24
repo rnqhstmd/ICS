@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.sqi_images.auth.authentication.AuthenticationContext;
-import org.example.sqi_images.auth.authentication.annotation.DepartmentMember;
+import org.example.sqi_images.common.aop.annotation.DepartmentMember;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.department.domain.repository.DepartmentRepository;
