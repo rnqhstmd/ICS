@@ -20,8 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.DEPARTMENT_NOT_FOUND_ERROR;
-import static org.example.sqi_images.common.exception.type.ErrorType.UPLOADED_FILE_EMPTY_ERROR;
+import static org.example.sqi_images.common.exception.type.ErrorType.*;
 import static org.example.sqi_images.drive.common.util.FileUtil.*;
 
 @Service
@@ -37,11 +36,16 @@ public class GlobalFileService {
             throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
         }
 
+        String fileName = file.getOriginalFilename();
+        // 중복 파일 이름 검사
+        if (globalFileRepository.existsByFileName(fileName)) {
+            throw new BadRequestException(DUPLICATED_FILE_NAME_ERROR);
+        }
+        String fileExtension = getExtensionByFileName(fileName);
+
         byte[] fileData = file.getBytes();
         long fileSize = file.getSize();
 
-        String fileName = generateUniqueFileName(file.getOriginalFilename());
-        String fileExtension = getExtensionByFileName(fileName);
         Department department = departmentRepository.findById(employee.getDepartment().getId())
                 .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
 
@@ -68,15 +72,5 @@ public class GlobalFileService {
     public PageResultDto<FileListDto, GlobalFile> getGlobalFilesList(PageRequestDto pageRequestDto) {
         Page<GlobalFile> result = globalFileRepository.findAll(pageRequestDto.toPageable());
         return new PageResultDto<>(result, FileListDto::ofGlobalFile);
-    }
-
-    private String generateUniqueFileName(String originalName) {
-        int count = 0;
-        String fileName = originalName;
-        while (globalFileRepository.existsByFileName(fileName)) {
-            count++;
-            fileName = originalName + " (" + count + ")";
-        }
-        return fileName;
     }
 }
