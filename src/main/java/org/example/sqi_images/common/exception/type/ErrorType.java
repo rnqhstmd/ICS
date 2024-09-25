@@ -10,6 +10,7 @@ public enum ErrorType {
     // BAD_REQUEST
     INVALID_PAGE_REQUEST_ERROR(40000, "요청한 페이지 번호가 유효하지 않습니다."),
     UPLOADED_FILE_EMPTY_ERROR(40001, "업로드된 파일이 비어있습니다."),
+    DUPLICATED_FILE_NAME_ERROR(40002, "이미 존재하는 파일 이름입니다."),
 
     // UNAUTHORIZED
     NOT_AUTHENTICATED_ERROR(40100, "인증되지 않았습니다."),
