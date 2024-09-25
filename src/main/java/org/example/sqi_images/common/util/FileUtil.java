@@ -1,13 +1,17 @@
-package org.example.sqi_images.drive.common.util;
+package org.example.sqi_images.common.util;
+import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
 
 import static org.example.sqi_images.common.constant.Constants.*;
+import static org.example.sqi_images.common.exception.type.ErrorType.DUPLICATED_FILE_NAME_ERROR;
+import static org.example.sqi_images.common.exception.type.ErrorType.UPLOADED_FILE_EMPTY_ERROR;
 
 @Component
 public class FileUtil {
@@ -40,6 +44,24 @@ public class FileUtil {
             return DECIMAL_FORMAT.format(sizeInBytes / (double) KB) + " KB";
         } else {
             return DECIMAL_FORMAT.format(sizeInBytes / (double) MB) + " MB";
+        }
+    }
+
+    /**
+     * 파일이 비어 있는지 확인 메서드
+     */
+    public static void validaEmptyFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
+        }
+    }
+
+    /**
+     * 파일 중복 검사
+     */
+    public static void validateDuplicatedFileName(boolean exists) {
+        if (exists) {
+            throw new BadRequestException(DUPLICATED_FILE_NAME_ERROR);
         }
     }
 
