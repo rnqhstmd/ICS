@@ -6,6 +6,7 @@ import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.photo.dto.response.PhotoDataResponse;
 import org.example.sqi_images.photo.domain.Photo;
 import org.example.sqi_images.photo.domain.repository.PhotoRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,8 @@ import static org.example.sqi_images.common.exception.type.ErrorType.PHOTO_NOT_F
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
+    @Value("${app.imageUrl}")
+    private String imageUrl;
 
     @Transactional
     public Photo saveImage(Employee employee, MultipartFile file) throws IOException {
@@ -32,5 +35,9 @@ public class PhotoService {
                 .orElseThrow(() -> new NotFoundException(PHOTO_NOT_FOUND_ERROR));
 
         return PhotoDataResponse.from(photo.getPhotoData());
+    }
+
+    public String generateImageUrl(Long photoId) {
+        return imageUrl + photoId;
     }
 }

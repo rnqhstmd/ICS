@@ -3,11 +3,10 @@ package org.example.sqi_images.drive.department.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
-import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.domain.repository.DepartmentRepository;
+import org.example.sqi_images.department.service.DepartmentService;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.department.domain.repository.DepartmentFileRepository;
@@ -20,40 +19,33 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.*;
-import static org.example.sqi_images.drive.common.util.FileUtil.*;
+import static org.example.sqi_images.common.util.FileUtil.*;
 
 @Service
 @RequiredArgsConstructor
 public class DepartmentFileService {
 
+    private final DepartmentService departmentService;
     private final DepartmentFileRepository departmentFileRepository;
-    private final DepartmentRepository departmentRepository;
 
+    /**
+     * 부서 공유 드라이브 파일 업로드
+     */
     @Transactional
     public void uploadDepartmentFile(Employee employee,
                                      Long departmentId,
                                      MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
-        }
-
+        validaEmptyFile(file);
         String fileName = file.getOriginalFilename();
-        // 중복 파일 이름 검사
-        if (departmentFileRepository.existsByFileName(fileName)) {
-            throw new BadRequestException(DUPLICATED_FILE_NAME_ERROR);
-        }
+        validateDuplicatedFileName(departmentFileRepository.existsByFileName(fileName));
         String fileExtension = getExtensionByFileName(fileName);
 
-        // 파일 데이터 추출
         byte[] fileData = file.getBytes();
         long fileSize = file.getSize();
-
         String formattedFileSize = formatFileSize(fileSize);
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
-
         String contentType = file.getContentType();
+
+        Department department = departmentService.findExistingDepartmentByType(departmentId);
 
         DepartmentFile newFile = new DepartmentFile(
                 fileName,
@@ -67,10 +59,11 @@ public class DepartmentFileService {
         );
         departmentFileRepository.save(newFile);
     }
-
+    /**
+     * 부서 공유 드라이브 특정 파일 다운로드
+     */
     public FileDownloadDto downloadDepartmentFile(Long fileId) {
-        DepartmentFile file = departmentFileRepository.findById(fileId)
-                .orElseThrow(() -> new NotFoundException(ErrorType.FILE_NOT_FOUND_ERROR));
+        DepartmentFile file = findExistingFileById(fileId);
 
         return FileDownloadDto.of(
                 file.getFileName(),
@@ -80,6 +73,9 @@ public class DepartmentFileService {
         );
     }
 
+    /**
+     * 부서 공유 드라이브 전체 조회
+     */
     @Transactional(readOnly = true)
     public PageResultDto<DepartmentFileListDto, DepartmentFile> getDepartmentFileList(Long departmentId,
                                                                                       int page) {
@@ -89,5 +85,10 @@ public class DepartmentFileService {
                 pageRequestDto.toPageable()
         );
         return new PageResultDto<>(result, DepartmentFileListDto::of);
+    }
+
+    private DepartmentFile findExistingFileById(Long fileId) {
+        return departmentFileRepository.findById(fileId)
+                .orElseThrow(() -> new NotFoundException(ErrorType.FILE_NOT_FOUND_ERROR));
     }
 }

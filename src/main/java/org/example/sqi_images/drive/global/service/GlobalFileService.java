@@ -3,11 +3,10 @@ package org.example.sqi_images.drive.global.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
-import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.domain.repository.DepartmentRepository;
+import org.example.sqi_images.department.service.DepartmentService;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.drive.global.domain.repository.GlobalFileRepository;
@@ -20,45 +19,53 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.*;
-import static org.example.sqi_images.drive.common.util.FileUtil.*;
+import static org.example.sqi_images.common.util.FileUtil.*;
+import static org.example.sqi_images.common.util.FileUtil.validateDuplicatedFileName;
 
 @Service
 @RequiredArgsConstructor
 public class GlobalFileService {
 
+    private final DepartmentService departmentService;
     private final GlobalFileRepository globalFileRepository;
-    private final DepartmentRepository departmentRepository;
 
+    /**
+     * 전체 공유 드라이브 파일 업로드
+     */
     @Transactional
     public void uploadGlobalFile(Employee employee, MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
-        }
-
+        validaEmptyFile(file);
         String fileName = file.getOriginalFilename();
-        // 중복 파일 이름 검사
-        if (globalFileRepository.existsByFileName(fileName)) {
-            throw new BadRequestException(DUPLICATED_FILE_NAME_ERROR);
-        }
+        validateDuplicatedFileName(globalFileRepository.existsByFileName(fileName));
         String fileExtension = getExtensionByFileName(fileName);
 
         byte[] fileData = file.getBytes();
         long fileSize = file.getSize();
-
-        Department department = departmentRepository.findById(employee.getDepartment().getId())
-                .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
-
         String formattedFileSize = formatFileSize(fileSize);
         String contentType = file.getContentType();
 
-        GlobalFile newFile = new GlobalFile(fileName, fileData, contentType, fileExtension, fileSize, formattedFileSize, employee, department);
+        Department department = departmentService.findExistingDepartmentByType(
+                employee.getDepartment().getId()
+        );
+
+        GlobalFile newFile = new GlobalFile(
+                fileName,
+                fileData,
+                contentType,
+                fileExtension,
+                fileSize,
+                formattedFileSize,
+                employee,
+                department
+        );
         globalFileRepository.save(newFile);
     }
 
+    /**
+     * 전체 공유 드라이브 특정 파일 다운로드
+     */
     public FileDownloadDto downloadGlobalFile(Long fileId) {
-        GlobalFile file = globalFileRepository.findById(fileId)
-                .orElseThrow(() -> new NotFoundException(ErrorType.FILE_NOT_FOUND_ERROR));
+        GlobalFile file = findExistingFile(fileId);
 
         return FileDownloadDto.of(
                 file.getFileName(),
@@ -68,6 +75,14 @@ public class GlobalFileService {
         );
     }
 
+    private GlobalFile findExistingFile(Long fileId) {
+        return globalFileRepository.findById(fileId)
+                .orElseThrow(() -> new NotFoundException(ErrorType.FILE_NOT_FOUND_ERROR));
+    }
+
+    /**
+     * 전체 공유 드라이브 전체 조회
+     */
     @Transactional(readOnly = true)
     public PageResultDto<GlobalFileListDto, GlobalFile> getGlobalFilesList(int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);

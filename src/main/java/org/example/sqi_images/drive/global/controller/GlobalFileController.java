@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static org.example.sqi_images.drive.common.util.FileUtil.createFileDownloadHeaders;
+import static org.example.sqi_images.common.util.FileUtil.createFileDownloadHeaders;
 
 @RestController
 @RequiredArgsConstructor
