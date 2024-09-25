@@ -3,11 +3,10 @@ package org.example.sqi_images.employee.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.common.domain.PartType;
-import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.domain.repository.DepartmentRepository;
+import org.example.sqi_images.department.service.DepartmentService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
@@ -15,10 +14,9 @@ import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponseList;
 import org.example.sqi_images.part.domain.Part;
-import org.example.sqi_images.part.domain.repository.PartRepository;
+import org.example.sqi_images.part.service.PartService;
 import org.example.sqi_images.photo.domain.Photo;
 import org.example.sqi_images.photo.service.PhotoService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,50 +25,40 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
+import static org.example.sqi_images.common.util.FileUtil.validaEmptyFile;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
 
     private final PhotoService photoService;
-    private final PartRepository partRepository;
-    private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
-
-    @Value("${app.baseUrl}")
-    private String baseUrl;
+    private final PartService partService;
+    private final DepartmentService departmentService;
+    final EmployeeRepository employeeRepository;
 
     /**
      * 프로필 생성
      */
     @Transactional
     public void createProfile(Employee employee, CreateProfileDto createProfileDto, MultipartFile file) throws IOException {
+        validaEmptyFile(file);
         // 프로필 이미 생성했던 직원 검증
         if (employee.getDepartment() != null) {
             throw new ForbiddenException(PROFILE_ALREADY_EXISTS_ERROR);
         }
 
-        if (file.isEmpty()) {
-            throw new BadRequestException(UPLOADED_FILE_EMPTY_ERROR);
-        }
+        Department department = departmentService.findExistingDepartmentByType(
+                DepartmentType.fromValue(createProfileDto.department()));
 
-        DepartmentType departmentType = DepartmentType.fromValue(createProfileDto.department());
-        Department department = departmentRepository.findByDepartmentType(departmentType)
-                .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
-
-        PartType partType = PartType.valueOf(createProfileDto.part());
-        Part part = partRepository.findByPartType(partType)
-                .orElseThrow(() -> new NotFoundException(PART_NOT_FOUND_ERROR));
+        Part part = partService.findExistingPartByType(
+                PartType.valueOf(createProfileDto.part())
+        );
 
         Photo photo = photoService.saveImage(employee, file);
-        String photoUrl = generateImageUrl(photo.getId());
+        String photoUrl = photoService.generateImageUrl(photo.getId());
 
         employee.updateProfile(createProfileDto, photoUrl, photo, department, part);
         employeeRepository.save(employee);
-    }
-
-    private String generateImageUrl(Long photoId) {
-        return baseUrl + "/api/images/" + photoId;
     }
 
     /**
