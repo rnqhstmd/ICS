@@ -2,6 +2,7 @@ package org.example.sqi_images.employee.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.domain.DepartmentType;
+import org.example.sqi_images.common.domain.PartType;
 import org.example.sqi_images.common.exception.BadRequestException;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
@@ -13,6 +14,8 @@ import org.example.sqi_images.employee.dto.request.CreateProfileDto;
 import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponseList;
+import org.example.sqi_images.part.domain.Part;
+import org.example.sqi_images.part.domain.repository.PartRepository;
 import org.example.sqi_images.photo.domain.Photo;
 import org.example.sqi_images.photo.service.PhotoService;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +33,7 @@ import static org.example.sqi_images.common.exception.type.ErrorType.*;
 public class ProfileService {
 
     private final PhotoService photoService;
+    private final PartRepository partRepository;
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
 
@@ -54,10 +58,14 @@ public class ProfileService {
         Department department = departmentRepository.findByDepartmentType(departmentType)
                 .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
 
+        PartType partType = PartType.valueOf(createProfileDto.part());
+        Part part = partRepository.findByPartType(partType)
+                .orElseThrow(() -> new NotFoundException(PART_NOT_FOUND_ERROR));
+
         Photo photo = photoService.saveImage(employee, file);
         String photoUrl = generateImageUrl(photo.getId());
 
-        employee.updateProfile(createProfileDto, photoUrl, photo, department);
+        employee.updateProfile(createProfileDto, photoUrl, photo, department, part);
         employeeRepository.save(employee);
     }
 
@@ -91,7 +99,7 @@ public class ProfileService {
                 employee.getName(),
                 employee.getEmail(),
                 employee.getDepartment().getDepartmentType(),
-                employee.getPartType(),
+                employee.getPart().getPartType(),
                 employee.getLanguageType(),
                 employee.getFrameworkType(),
                 employee.getPhotoUrl()

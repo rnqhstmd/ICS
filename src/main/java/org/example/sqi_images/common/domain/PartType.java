@@ -12,11 +12,38 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public enum PartType {
 
-    AI_HEALTH_CARE("헬스케어"),
-    AI_VIDEO_ANALYSIS("영상분석"),
-    AI_SUPPORT("지원");
+    AI_EX,
+    AI_HC,
+    AI_VA,
+    AI_SUP,
 
-    private final String description;
+    SYS_EX,
+    SYS_OSS,
+    SYS_BSS,
+    SYS_CNC,
+    SYS_COM,
+
+    EN_EX,
+    EN_ZN,
+    EN_SV,
+    EN_PF,
+    EN_PD,
+
+    SC_EX,
+    SC_SL,
+    SC_IFR,
+    SC_DEV,
+
+    MD_EX,
+    MD_PF,
+    MD_BNS_1,
+    MD_BNS_2,
+
+    LAB_RS_1,
+    LAB_RS_2,
+
+    MAN_SUP,
+    MAN_LAB;
 
     @JsonCreator
     public static PartType fromValue(String value) {

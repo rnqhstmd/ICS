@@ -3,11 +3,10 @@ package org.example.sqi_images.drive.department.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.aop.annotation.DepartmentMember;
-import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
-import org.example.sqi_images.drive.common.dto.response.FileListDto;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
+import org.example.sqi_images.drive.department.dto.response.DepartmentFileListDto;
 import org.example.sqi_images.drive.department.service.DepartmentFileService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.core.io.ByteArrayResource;
@@ -53,11 +52,12 @@ public class DepartmentFileController {
 
     @GetMapping("/list")
     @DepartmentMember
-    public ResponseEntity<PageResultDto<FileListDto, DepartmentFile>> listFiles(@PathVariable Long departmentId,
-                                                                                @RequestParam(defaultValue = "1") int page) {
-        PageRequestDto pageRequestDto = new PageRequestDto(page);
-        PageResultDto<FileListDto, DepartmentFile> fileList = departmentFileService
-                .getDepartmentFileList(departmentId, pageRequestDto);
+    public ResponseEntity<PageResultDto<DepartmentFileListDto, DepartmentFile>> listFiles(@PathVariable Long departmentId,
+                                                                                          @RequestParam(defaultValue = "1") int page) {
+        PageResultDto<DepartmentFileListDto, DepartmentFile> fileList = departmentFileService.getDepartmentFileList(
+                departmentId,
+                page
+        );
         return ResponseEntity.ok(fileList);
     }
 }

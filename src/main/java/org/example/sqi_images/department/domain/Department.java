@@ -9,6 +9,7 @@ import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.employee.domain.Employee;
+import org.example.sqi_images.part.domain.Part;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,15 @@ public class Department extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DepartmentType departmentType;
 
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Part> parts = new ArrayList<>();
+
     @OneToMany(mappedBy = "department")
-    private List<Employee> employees = new ArrayList<>();
+    private List<Employee> employees;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GlobalFile> globalFiles = new ArrayList<>();
+    private List<GlobalFile> globalFiles;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DepartmentFile> departmentFiles = new ArrayList<>();
+    private List<DepartmentFile> departmentFiles;
 }
