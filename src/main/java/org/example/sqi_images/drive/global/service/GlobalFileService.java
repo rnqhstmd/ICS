@@ -9,9 +9,9 @@ import org.example.sqi_images.common.exception.type.ErrorType;
 import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.department.domain.repository.DepartmentRepository;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
-import org.example.sqi_images.drive.common.dto.response.FileListDto;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.drive.global.domain.repository.GlobalFileRepository;
+import org.example.sqi_images.drive.global.dto.response.GlobalFileListDto;
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -69,8 +69,9 @@ public class GlobalFileService {
     }
 
     @Transactional(readOnly = true)
-    public PageResultDto<FileListDto, GlobalFile> getGlobalFilesList(PageRequestDto pageRequestDto) {
-        Page<GlobalFile> result = globalFileRepository.findAll(pageRequestDto.toPageable());
-        return new PageResultDto<>(result, FileListDto::ofGlobalFile);
+    public PageResultDto<GlobalFileListDto, GlobalFile> getGlobalFilesList(int page) {
+        PageRequestDto pageRequestDto = new PageRequestDto(page);
+        Page<GlobalFile> result = globalFileRepository.findAllWithEmployeeAndDepartment(pageRequestDto.toPageable());
+        return new PageResultDto<>(result, GlobalFileListDto::of);
     }
 }
