@@ -1,25 +1,16 @@
 package org.example.sqi_images.drive.common.util;
-import org.apache.tika.Tika;
-import org.apache.tika.mime.MimeType;
-import org.apache.tika.mime.MimeTypes;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
+
+import static org.example.sqi_images.common.constant.Constants.*;
 
 @Component
 public class FileUtil {
-
-    public static final Tika tika = new Tika();
-    private static final long KB = 1024;
-    private static final long MB = 1024 * KB;
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
     /**
      * 파일 다운로드에 필요한 HttpHeaders 생성 메서드
@@ -27,6 +18,7 @@ public class FileUtil {
     public static HttpHeaders createFileDownloadHeaders(FileDownloadDto fileDownloadDto) {
         HttpHeaders headers = new HttpHeaders();
         String fileName = fileDownloadDto.fileName();
+
         ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
                 .filename(fileName, StandardCharsets.UTF_8)
                 .build();
@@ -52,16 +44,20 @@ public class FileUtil {
     }
 
     /**
-     * 파일 확장자 추출 메서드
+     * 파일 이름에서 확장자 추출
      */
-     public static String getFileExtensionByMimeType(InputStream input) throws IOException {
-        MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
-        String mimeType = tika.detect(input);
-        try {
-            MimeType type = allTypes.forName(mimeType);
-            return type.getExtension();
-        } catch (Exception e) {
-            return "";
+    public static String getExtensionByFileName(String fileName) {
+        if (fileName == null) {
+            return null; // 파일 이름이 null인 경우
+        }
+
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot == -1) {
+            return ""; // 확장자가 없는 경우
+        } else if (lastIndexOfDot == fileName.length() - 1) {
+            return ""; // 파일 이름이 점으로 끝나는 경우
+        } else {
+            return fileName.substring(lastIndexOfDot + 1);
         }
     }
 }
