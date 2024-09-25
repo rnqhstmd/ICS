@@ -9,6 +9,7 @@ import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
+import org.example.sqi_images.part.domain.Part;
 import org.example.sqi_images.photo.domain.Photo;
 
 import java.util.List;
@@ -40,9 +41,9 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FrameworkType frameworkType;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private PartType partType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "part_id")
+    private Part part;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DepartmentFile> departmentFiles;
@@ -64,11 +65,11 @@ public class Employee extends BaseEntity {
         this.name = name;
     }
 
-    public void updateProfile(CreateProfileDto request, String photoUrl, Photo photo, Department department) {
+    public void updateProfile(CreateProfileDto request, String photoUrl, Photo photo, Department department, Part part) {
         this.photoUrl = photoUrl;
         this.languageType = LanguageType.fromValue(request.language());
         this.frameworkType = FrameworkType.fromValue(request.framework());
-        this.partType = PartType.fromValue(request.part());
+        this.part = part;
         this.photo = photo;
         this.department = department;
     }
