@@ -2,11 +2,10 @@ package org.example.sqi_images.drive.global.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
-import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
-import org.example.sqi_images.drive.common.dto.response.FileListDto;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
+import org.example.sqi_images.drive.global.dto.response.GlobalFileListDto;
 import org.example.sqi_images.drive.global.service.GlobalFileService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.core.io.ByteArrayResource;
@@ -47,9 +46,8 @@ public class GlobalFileController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<PageResultDto<FileListDto, GlobalFile>> listFiles(@RequestParam(defaultValue = "1") int page) {
-        PageRequestDto pageRequestDto = new PageRequestDto(page);
-        PageResultDto<FileListDto, GlobalFile> fileList = globalFileService.getGlobalFilesList(pageRequestDto);
+    public ResponseEntity<PageResultDto<GlobalFileListDto, GlobalFile>> listFiles(@RequestParam(defaultValue = "1") int page) {
+        PageResultDto<GlobalFileListDto, GlobalFile> fileList = globalFileService.getGlobalFilesList(page);
         return ResponseEntity.ok(fileList);
     }
 }
