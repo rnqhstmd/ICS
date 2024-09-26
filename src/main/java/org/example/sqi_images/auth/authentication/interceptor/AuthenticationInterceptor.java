@@ -6,21 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.AccessTokenProvider;
 import org.example.sqi_images.auth.authentication.AuthenticationContext;
 import org.example.sqi_images.auth.authentication.AuthenticationExtractor;
-import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.employee.domain.Employee;
-import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
+import org.example.sqi_images.employee.service.EmployeeService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NOT_FOUND_ERROR;
-
 @Component
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
     private final AuthenticationContext authenticationContext;
     private final AccessTokenProvider accessTokenProvider;
 
@@ -28,12 +25,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws UnsupportedEncodingException {
         String accessToken = AuthenticationExtractor.extract(request);
         Long employeeId = Long.valueOf(accessTokenProvider.getPayload(accessToken));
-        Employee employee = findExistingEmployee(employeeId);
+        Employee employee = employeeService.findExistingEmployee(employeeId);
         authenticationContext.setPrincipal(employee);
         return true;
-    }
-
-    private Employee findExistingEmployee(Long employeeId) {
-        return employeeRepository.findById(employeeId).orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
     }
 }
