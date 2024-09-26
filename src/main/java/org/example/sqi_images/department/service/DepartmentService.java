@@ -15,7 +15,7 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    public Department findExistingDepartmentByType(Long departmentId) {
+    public Department findExistingDepartmentById(Long departmentId) {
         return departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
     }

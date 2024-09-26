@@ -45,7 +45,7 @@ public class DepartmentFileService {
         String formattedFileSize = formatFileSize(fileSize);
         String contentType = file.getContentType();
 
-        Department department = departmentService.findExistingDepartmentByType(departmentId);
+        Department department = departmentService.findExistingDepartmentById(departmentId);
 
         DepartmentFile newFile = new DepartmentFile(
                 fileName,
