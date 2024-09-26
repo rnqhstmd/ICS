@@ -18,4 +18,9 @@ public class EmployeeService {
         return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
     }
+
+    public Employee findEmployeeWithDetails(Long employeeId) {
+        return employeeRepository.findByIdWithDetails(employeeId)
+                .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+    }
 }
