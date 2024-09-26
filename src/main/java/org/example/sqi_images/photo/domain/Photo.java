@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.sqi_images.common.domain.BaseEntity;
-import org.example.sqi_images.employee.domain.Employee;
+import org.example.sqi_images.employee.domain.EmployeeDetail;
 
 @Entity
 @Getter
@@ -21,5 +21,9 @@ public class Photo extends BaseEntity {
     private byte[] photoData;
 
     @OneToOne(mappedBy = "photo")
-    private Employee employee;
+    private EmployeeDetail detail;
+
+    public Photo(byte[] photoData) {
+        this.photoData = photoData;
+    }
 }

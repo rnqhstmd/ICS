@@ -5,8 +5,6 @@ import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.common.exception.type.ErrorType;
-import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.service.DepartmentService;
 import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.drive.global.domain.repository.GlobalFileRepository;
@@ -26,7 +24,6 @@ import static org.example.sqi_images.common.util.FileUtil.validateDuplicatedFile
 @RequiredArgsConstructor
 public class GlobalFileService {
 
-    private final DepartmentService departmentService;
     private final GlobalFileRepository globalFileRepository;
 
     /**
@@ -44,10 +41,6 @@ public class GlobalFileService {
         String formattedFileSize = formatFileSize(fileSize);
         String contentType = file.getContentType();
 
-        Department department = departmentService.findExistingDepartmentByType(
-                employee.getDepartment().getId()
-        );
-
         GlobalFile newFile = new GlobalFile(
                 fileName,
                 fileData,
@@ -55,8 +48,7 @@ public class GlobalFileService {
                 fileExtension,
                 fileSize,
                 formattedFileSize,
-                employee,
-                department
+                employee
         );
         globalFileRepository.save(newFile);
     }
