@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.sqi_images.common.domain.BaseEntity;
-import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.employee.domain.Employee;
 
 @Entity
@@ -39,8 +38,4 @@ public class GlobalFile extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
 }
