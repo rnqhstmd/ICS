@@ -17,7 +17,7 @@ public record GlobalFileListDto(
     public static GlobalFileListDto of(GlobalFile file) {
         return new GlobalFileListDto(
                 file.getId(),
-                file.getDepartment().getDepartmentType(),
+                file.getEmployee().getDepartment().getDepartmentType(),
                 file.getFileName(),
                 file.getEmployee().getName(),
                 file.getCreatedAt().format(FORMATTER),
