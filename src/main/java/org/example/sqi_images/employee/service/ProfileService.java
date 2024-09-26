@@ -1,11 +1,8 @@
 package org.example.sqi_images.employee.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.common.domain.PartType;
 import org.example.sqi_images.common.exception.ForbiddenException;
-import org.example.sqi_images.department.domain.Department;
-import org.example.sqi_images.department.service.DepartmentService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.domain.EmployeeDetail;
 import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
@@ -33,9 +30,8 @@ import static org.example.sqi_images.common.util.FileUtil.validaEmptyFile;
 public class ProfileService {
 
     private final PhotoService photoService;
-    private final PartService partService;
-    private final DepartmentService departmentService;
     private final EmployeeService employeeService;
+    private final PartService partService;
     private final EmployeeRepository employeeRepository;
     private final EmployeeDetailRepository detailRepository;
 
@@ -52,11 +48,9 @@ public class ProfileService {
             throw new ForbiddenException(PROFILE_ALREADY_EXISTS_ERROR);
         }
         // 소속 부서, 파트 업데이트
-        Department department = departmentService.findExistingDepartmentByType(
-                DepartmentType.fromValue(createProfileDto.department()));
         Part part = partService.findExistingPartByType(
                 PartType.valueOf(createProfileDto.part()));
-        employee.updateDepartmentAndPart(department,part);
+        employee.updatePart(part);
 
         // 사용 언어, 프레임워크, 사진 저장
         Photo photo = photoService.saveImage(file);
@@ -86,6 +80,7 @@ public class ProfileService {
                                 profile.getDetail().getPhotoUrl()
                         ))
                 .toList();
+
         return ProfileResponseList.from(profiles);
     }
 
@@ -94,13 +89,14 @@ public class ProfileService {
      */
     @Transactional(readOnly = true)
     public ProfileDetailResponse getProfileDetail(Long employeeId) {
-        Employee employee = employeeService.findExistingEmployee(employeeId);
+        Employee employee = employeeService.findEmployeeWithDetails(employeeId);
         EmployeeDetail detail = employee.getDetail();
+
         return ProfileDetailResponse.of(
                 employeeId,
                 employee.getName(),
                 employee.getEmail(),
-                employee.getDepartment().getDepartmentType(),
+                employee.getPart().getDepartment().getDepartmentType(),
                 employee.getPart().getPartType(),
                 detail.getLanguageType(),
                 detail.getFrameworkType(),
