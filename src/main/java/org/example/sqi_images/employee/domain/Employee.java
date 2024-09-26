@@ -8,9 +8,7 @@ import org.example.sqi_images.common.domain.*;
 import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
-import org.example.sqi_images.employee.dto.request.CreateProfileDto;
 import org.example.sqi_images.part.domain.Part;
-import org.example.sqi_images.photo.domain.Photo;
 
 import java.util.List;
 
@@ -30,20 +28,17 @@ public class Employee extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column
-    private String photoUrl;
-
-    @Column
-    @Enumerated(EnumType.STRING)
-    private LanguageType languageType;
-
-    @Column
-    @Enumerated(EnumType.STRING)
-    private FrameworkType frameworkType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "part_id")
     private Part part;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "detail_id")
+    private EmployeeDetail detail;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DepartmentFile> departmentFiles;
@@ -51,26 +46,18 @@ public class Employee extends BaseEntity {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GlobalFile> globalFiles;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "photo_id")
-    private Photo photo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
-    private Department department;
-
     public Employee(String email, String password, String name) {
         this.email = email;
         this.password = password;
         this.name = name;
     }
 
-    public void updateProfile(CreateProfileDto request, String photoUrl, Photo photo, Department department, Part part) {
-        this.photoUrl = photoUrl;
-        this.languageType = LanguageType.fromValue(request.language());
-        this.frameworkType = FrameworkType.fromValue(request.framework());
+    public void updateDepartmentAndPart(Department department, Part part) {
         this.part = part;
-        this.photo = photo;
         this.department = department;
+    }
+
+    public void setEmployeeDetailInfo(EmployeeDetail detail) {
+        this.detail = detail;
     }
 }
