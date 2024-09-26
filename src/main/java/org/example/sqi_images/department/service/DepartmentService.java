@@ -1,7 +1,6 @@
 package org.example.sqi_images.department.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.department.domain.repository.DepartmentRepository;
@@ -17,11 +16,6 @@ public class DepartmentService {
 
     public Department findExistingDepartmentById(Long departmentId) {
         return departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
-    }
-
-    public Department findExistingDepartmentByType(DepartmentType departmentType) {
-        return departmentRepository.findByDepartmentType(departmentType)
                 .orElseThrow(() -> new NotFoundException(DEPARTMENT_NOT_FOUND_ERROR));
     }
 }

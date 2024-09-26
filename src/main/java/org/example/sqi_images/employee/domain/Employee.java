@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.sqi_images.common.domain.*;
-import org.example.sqi_images.department.domain.Department;
 import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.drive.global.domain.GlobalFile;
 import org.example.sqi_images.part.domain.Part;
@@ -29,10 +28,6 @@ public class Employee extends BaseEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
-    private Department department;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "part_id")
     private Part part;
 
@@ -52,9 +47,8 @@ public class Employee extends BaseEntity {
         this.name = name;
     }
 
-    public void updateDepartmentAndPart(Department department, Part part) {
+    public void updatePart(Part part) {
         this.part = part;
-        this.department = department;
     }
 
     public void setEmployeeDetailInfo(EmployeeDetail detail) {
