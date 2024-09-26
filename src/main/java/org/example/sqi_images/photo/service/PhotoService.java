@@ -2,7 +2,6 @@ package org.example.sqi_images.photo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.exception.NotFoundException;
-import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.photo.dto.response.PhotoDataResponse;
 import org.example.sqi_images.photo.domain.Photo;
 import org.example.sqi_images.photo.domain.repository.PhotoRepository;
@@ -20,12 +19,12 @@ import static org.example.sqi_images.common.exception.type.ErrorType.PHOTO_NOT_F
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
-    @Value("${app.imageUrl}")
-    private String imageUrl;
+    @Value("${app.baseUrl}")
+    private String baseUrl;
 
     @Transactional
-    public Photo saveImage(Employee employee, MultipartFile file) throws IOException {
-        Photo photo = new Photo(file.getBytes(), employee);
+    public Photo saveImage(MultipartFile file) throws IOException {
+        Photo photo = new Photo(file.getBytes());
         return photoRepository.save(photo);
     }
 
@@ -38,6 +37,6 @@ public class PhotoService {
     }
 
     public String generateImageUrl(Long photoId) {
-        return imageUrl + photoId;
+        return baseUrl + "api/images/" + photoId;
     }
 }
