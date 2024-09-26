@@ -23,4 +23,15 @@ public final class CookieUtil {
 
         response.addHeader("set-cookie", cookie.toString());
     }
+
+    public static void clearCookies(HttpServletResponse response) {
+        ResponseCookie accessCookie = ResponseCookie.from(TOKEN_COOKIE_NAME, "")
+                .maxAge(0)
+                .path("/")
+                .httpOnly(true)
+                .sameSite("None").secure(true)
+                .build();
+
+        response.addHeader("Set-Cookie", accessCookie.toString());
+    }
 }

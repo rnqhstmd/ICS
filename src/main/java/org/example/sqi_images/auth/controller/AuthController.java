@@ -7,14 +7,13 @@ import org.example.sqi_images.auth.dto.request.LoginDto;
 import org.example.sqi_images.auth.dto.request.RegisterDto;
 import org.example.sqi_images.auth.dto.response.TokenDto;
 import org.example.sqi_images.auth.service.AuthService;
-import org.example.sqi_images.auth.utils.CookieUtil;
-import org.example.sqi_images.auth.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.example.sqi_images.auth.utils.CookieUtil.clearCookies;
+import static org.example.sqi_images.auth.utils.CookieUtil.setCookie;
+import static org.example.sqi_images.auth.utils.JwtUtil.encode;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +31,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
         TokenDto tokenDto = authService.login(loginDto);
-        String encodedToken = JwtUtil.encode(tokenDto.accessToken());
-        CookieUtil.setCookie(response, encodedToken);
+        String encodedToken = encode(tokenDto.accessToken());
+        setCookie(response, encodedToken);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(final HttpServletResponse response) {
+        clearCookies(response);
         return ResponseEntity.ok().build();
     }
 }
