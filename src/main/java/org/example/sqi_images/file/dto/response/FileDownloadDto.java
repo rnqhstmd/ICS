@@ -1,4 +1,4 @@
-package org.example.sqi_images.drive.common.dto.response;
+package org.example.sqi_images.file.dto.response;
 
 public record FileDownloadDto(
         String fileName,
