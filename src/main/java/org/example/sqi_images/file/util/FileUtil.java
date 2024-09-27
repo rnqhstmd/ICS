@@ -1,6 +1,6 @@
-package org.example.sqi_images.common.util;
+package org.example.sqi_images.file.util;
 import org.example.sqi_images.common.exception.BadRequestException;
-import org.example.sqi_images.drive.common.dto.response.FileDownloadDto;
+import org.example.sqi_images.file.dto.response.FileDownloadDto;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -62,24 +62,6 @@ public class FileUtil {
     public static void validateDuplicatedFileName(boolean exists) {
         if (exists) {
             throw new BadRequestException(DUPLICATED_FILE_NAME_ERROR);
-        }
-    }
-
-    /**
-     * 파일 이름에서 확장자 추출
-     */
-    public static String getExtensionByFileName(String fileName) {
-        if (fileName == null) {
-            return null; // 파일 이름이 null인 경우
-        }
-
-        int lastIndexOfDot = fileName.lastIndexOf('.');
-        if (lastIndexOfDot == -1) {
-            return ""; // 확장자가 없는 경우
-        } else if (lastIndexOfDot == fileName.length() - 1) {
-            return ""; // 파일 이름이 점으로 끝나는 경우
-        } else {
-            return fileName.substring(lastIndexOfDot + 1);
         }
     }
 }
