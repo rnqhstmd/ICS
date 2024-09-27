@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
-import static org.example.sqi_images.common.util.FileUtil.validaEmptyFile;
+import static org.example.sqi_images.file.util.FileUtil.validaEmptyFile;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +72,7 @@ public class ProfileService {
      */
     @Transactional(readOnly = true)
     public ProfileResponseList getAllProfiles() {
-        List<ProfileResponse> profiles = employeeRepository.findAllWithDetails().stream()
+        List<ProfileResponse> profiles = employeeRepository.findAllWithDetail().stream()
                 .map(profile ->
                         ProfileResponse.of(
                                 profile.getId(),
