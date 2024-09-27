@@ -1,41 +1,38 @@
-package org.example.sqi_images.drive.global.domain;
+package org.example.sqi_images.file.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.example.sqi_images.common.domain.BaseEntity;
+import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.employee.domain.Employee;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "global_files")
-public class GlobalFile extends BaseEntity {
+@NoArgsConstructor
+@Table(name = "file_infos")
+public class FileInfo extends BaseEntity {
 
     @Column(nullable = false)
     private String fileName;
-
-    @Lob
-    @Column(nullable = false)
-    private byte[] fileData;
-
-    @Column(nullable = false)
-    private String fileContentType;
 
     @Column(nullable = false)
     private String fileExtension;
 
     @Column(nullable = false)
-    private long fileSize;
-
-    @Column(nullable = false)
     private String formattedFileSize;
 
+    @OneToOne
+    @JoinColumn(name = "fileDataId")
+    private FileData fileData;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
+    @JoinColumn(name = "employeeId")
     private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driveId")
+    private Drive drive;
 }
