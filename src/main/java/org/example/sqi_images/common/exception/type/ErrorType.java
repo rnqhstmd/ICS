@@ -21,7 +21,8 @@ public enum ErrorType {
     TOKEN_EXPIRED_ERROR(40105, "인증에 필요한 토큰이 만료되었습니다."),
 
     // FORBIDDEN
-    DRIVE_ACCESS_DENIED_ERROR(40300, "해당 부서 드라이브의 접근 권한이 없습니다."),
+    NO_DRIVE_ACCESS_ERROR(40300, "해당 드라이브의 접근 권한이 없습니다."),
+    NO_ADMIN_ACCESS_ERROR(40301, "해당 작업은 관리자 권한이 필요합니다."),
 
     // NOT_FOUND
     NO_RESOURCE_ERROR(40400, "해당 리소스를 찾을 수 없습니다."),
@@ -31,6 +32,7 @@ public enum ErrorType {
     FILE_NOT_FOUND_ERROR(40404, "해당 파일을 찾을 수 없습니다."),
     DEPARTMENT_NOT_FOUND_ERROR(40405,"해당 부서를 찾을 수 없습니다."),
     PART_NOT_FOUND_ERROR(40406, "해당 파트를 찾을 수 없습니다"),
+    DRIVE_NOT_FOUND_ERROR(40407, "해당 드라이브를 찾을 수 없습니다."),
 
     // HTTP
     METHOD_NOT_ALLOWED_ERROR(40500, "잘못된 HTTP 메서드입니다."),
