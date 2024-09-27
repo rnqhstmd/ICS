@@ -21,4 +21,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("SELECT e FROM Employee e JOIN FETCH e.detail WHERE e.id = :id")
     Optional<Employee> findByIdWithDetail(@Param("id") Long id);
+
+    List<Employee> findByEmailContaining(String email);
 }

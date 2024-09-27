@@ -2,9 +2,12 @@ package org.example.sqi_images.employee.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.exception.NotFoundException;
+import org.example.sqi_images.employee.dto.response.SearchEmployeeResponse;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NOT_FOUND_ERROR;
 
@@ -13,6 +16,13 @@ import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NO
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+
+    public List<SearchEmployeeResponse> searchEmployees(String email) {
+        List<Employee> employees = employeeRepository.findByEmailContaining(email);
+        return employees.stream()
+                .map(SearchEmployeeResponse::from)
+                .toList();
+    }
 
     public Employee findExistingEmployee(Long employeeId) {
         return employeeRepository.findById(employeeId)
