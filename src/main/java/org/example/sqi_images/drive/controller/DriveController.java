@@ -6,7 +6,7 @@ import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.domain.DriveAccessType;
-import org.example.sqi_images.drive.dto.request.AssignRoleRequest;
+import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
@@ -54,8 +54,8 @@ public class DriveController {
     public ResponseEntity<String> assignRoles(
             @PathVariable Long driveId,
             @AuthEmployee Employee granter,
-            @RequestBody AssignRoleRequest assignRoleRequest) {
-        driveService.assignRoles(driveId, granter, assignRoleRequest);
+            @RequestBody AssignRoleRequestList assignRoleRequestList) {
+        driveService.assignRoles(driveId, granter, assignRoleRequestList);
         return ResponseEntity.ok("권한이 성공적으로 부여되었습니다.");
     }
 

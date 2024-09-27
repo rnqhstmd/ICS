@@ -9,7 +9,7 @@ import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.domain.DriveEmployee;
 import org.example.sqi_images.drive.domain.repository.DriveEmployeeRepository;
 import org.example.sqi_images.drive.domain.repository.DriveRepository;
-import org.example.sqi_images.drive.dto.request.AssignRoleRequest;
+import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.service.EmployeeService;
@@ -48,7 +48,7 @@ public class DriveService {
         driveEmployeeRepository.save(driveEmployee);
     }
 
-    public void assignRoles(Long driveId, Employee granter, AssignRoleRequest request) {
+    public void assignRoles(Long driveId, Employee granter, AssignRoleRequestList request) {
         Drive drive = findExistingDrive(driveId);
 
         DriveEmployee granterAccess = driveEmployeeRepository.findByDriveIdAndEmployeeId(driveId, granter.getId())
