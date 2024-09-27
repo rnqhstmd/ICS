@@ -1,8 +1,9 @@
 package org.example.sqi_images.employee.domain.repository;
 
 import org.example.sqi_images.employee.domain.Employee;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     boolean existsByEmail(String email);
 
-    @EntityGraph(attributePaths = {"detail"})
-    List<Employee> findAllWithDetails();
+    @Query("SELECT e FROM Employee e JOIN FETCH e.detail")
+    List<Employee> findAllWithDetail();
 
-    @EntityGraph(attributePaths = {"detail", "part.department"})
-    Optional<Employee> findByIdWithDetails(Long employeeId);
+    @Query("SELECT e FROM Employee e JOIN FETCH e.detail WHERE e.id = :id")
+    Optional<Employee> findByIdWithDetail(@Param("id") Long id);
 }
