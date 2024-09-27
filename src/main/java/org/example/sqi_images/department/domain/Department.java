@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.sqi_images.common.domain.BaseEntity;
 import org.example.sqi_images.common.domain.DepartmentType;
-import org.example.sqi_images.drive.department.domain.DepartmentFile;
 import org.example.sqi_images.part.domain.Part;
 
 import java.util.List;
@@ -24,7 +23,4 @@ public class Department extends BaseEntity {
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Part> parts;
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DepartmentFile> departmentFiles;
 }
