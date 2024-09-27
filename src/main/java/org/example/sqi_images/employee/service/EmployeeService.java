@@ -20,7 +20,7 @@ public class EmployeeService {
     }
 
     public Employee findEmployeeWithDetails(Long employeeId) {
-        return employeeRepository.findByIdWithDetails(employeeId)
+        return employeeRepository.findByIdWithDetail(employeeId)
                 .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
     }
 }
