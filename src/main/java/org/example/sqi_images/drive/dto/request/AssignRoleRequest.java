@@ -1,8 +1,9 @@
 package org.example.sqi_images.drive.dto.request;
 
-import java.util.List;
+import org.example.sqi_images.drive.domain.DriveAccessType;
 
 public record AssignRoleRequest(
-        List<EmployeeRoleDto> employeeRoles
+        Long employeeId,
+        DriveAccessType role
 ) {
 }
