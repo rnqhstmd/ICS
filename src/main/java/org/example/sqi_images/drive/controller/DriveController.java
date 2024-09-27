@@ -6,6 +6,7 @@ import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.domain.DriveAccessType;
+import org.example.sqi_images.drive.dto.request.AssignRoleRequest;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
@@ -46,6 +47,16 @@ public class DriveController {
             @RequestParam("file") MultipartFile file) throws IOException {
         driveService.uploadFileToDrive(employee, driveId, file);
         return ResponseEntity.ok("파일 업로드 성공");
+    }
+
+    @PostMapping("/{driveId}/assign-roles")
+    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    public ResponseEntity<String> assignRoles(
+            @PathVariable Long driveId,
+            @AuthEmployee Employee granter,
+            @RequestBody AssignRoleRequest assignRoleRequest) {
+        driveService.assignRoles(driveId, granter, assignRoleRequest);
+        return ResponseEntity.ok("권한이 성공적으로 부여되었습니다.");
     }
 
     @GetMapping("/{driveId}/files/{fileId}")
