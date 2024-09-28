@@ -54,16 +54,17 @@ public class DriveService {
         DriveEmployee granterAccess = driveEmployeeRepository.findByDriveIdAndEmployeeId(driveId, granter.getId())
                 .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
 
+        // USER 권한자가 권한을 부여하려는 경우 예외 처리
+        if (granterAccess.getRole() == USER) {
+            throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
+        }
+
         List<DriveEmployee> driveEmployees = request.employeeRoles().stream()
-                // 해당 드라이브에 대한 권한 가진 사원 필터링
-                .filter(employeeRoleDto -> !driveEmployeeRepository.existsByDriveIdAndEmployeeId(driveId, employeeRoleDto.employeeId()))
-                .map(employeeRoleDto -> {
-                    // USER 권한자가 ADMIN 권한을 부여하려는 경우 예외 처리
-                    if (granterAccess.getRole() == USER && employeeRoleDto.role() == ADMIN) {
-                        throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
-                    }
-                    Employee employee = employeeService.findExistingEmployee(employeeRoleDto.employeeId());
-                    return new DriveEmployee(employee, drive, employeeRoleDto.role());
+                // 해당 드라이브에 대한 권한 없는 사원 추출
+                .filter(assignRoleRequest -> !driveEmployeeRepository.existsByDriveIdAndEmployeeId(driveId, assignRoleRequest.employeeId()))
+                .map(assignRoleRequest -> {
+                    Employee employee = employeeService.findExistingEmployee(assignRoleRequest.employeeId());
+                    return new DriveEmployee(employee, drive, assignRoleRequest.role());
                 })
                 .toList();
 
