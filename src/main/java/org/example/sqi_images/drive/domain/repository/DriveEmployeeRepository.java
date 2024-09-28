@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface DriveEmployeeRepository extends JpaRepository<DriveEmployee, Long> {
 
     Optional<DriveEmployee> findByDriveIdAndEmployeeId(Long driveId, Long employeeId);
+
+    boolean existsByDriveIdAndEmployeeId(Long driveId, Long employeeId);
 }

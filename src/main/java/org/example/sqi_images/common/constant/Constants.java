@@ -18,9 +18,10 @@ public class Constants {
 
     // Drive
     public static final String ADD_DRIVE_API_PATH = "/api/drives/**";
+
+    // File
     public static final long KB = 1024;
     public static final long MB = 1024 * KB;
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yy.MM.dd");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yy.MM.dd");
 }

@@ -3,7 +3,7 @@ package org.example.sqi_images.file.dto.response;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.file.domain.FileInfo;
 
-import static org.example.sqi_images.common.constant.Constants.FORMATTER;
+import static org.example.sqi_images.common.constant.Constants.DATE_FORMATTER;
 
 public record FileInfoResponseDto(
         Long fileId,
@@ -19,7 +19,7 @@ public record FileInfoResponseDto(
                 file.getId(),
                 file.getFileName(),
                 employee.getName(),
-                file.getCreatedAt().format(FORMATTER),
+                file.getCreatedAt().format(DATE_FORMATTER),
                 file.getFileExtension(),
                 file.getFormattedFileSize()
         );
