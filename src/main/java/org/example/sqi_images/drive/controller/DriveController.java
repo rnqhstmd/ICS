@@ -50,7 +50,7 @@ public class DriveController {
     }
 
     @PostMapping("/{driveId}/assign-roles")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
     public ResponseEntity<String> assignRoles(
             @PathVariable Long driveId,
             @AuthEmployee Employee granter,
