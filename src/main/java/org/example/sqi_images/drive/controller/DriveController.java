@@ -53,10 +53,9 @@ public class DriveController {
     @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
     public ResponseEntity<String> assignRoles(
             @PathVariable Long driveId,
-            @AuthEmployee Employee granter,
-            @RequestBody AssignRoleRequestList assignRoleRequestList) {
-        driveService.assignRoles(driveId, granter, assignRoleRequestList);
-        return ResponseEntity.ok("권한이 성공적으로 부여되었습니다.");
+            @RequestBody @Valid AssignRoleRequestList assignRoleRequestList) {
+        driveService.assignAndUpdateRoles(driveId, assignRoleRequestList);
+        return ResponseEntity.ok("권한이 성공적으로 수정되었습니다.");
     }
 
     @GetMapping("/{driveId}/files/{fileId}")
