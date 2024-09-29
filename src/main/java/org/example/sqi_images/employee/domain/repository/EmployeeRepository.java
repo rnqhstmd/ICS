@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
@@ -23,4 +24,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByIdWithDetail(@Param("id") Long id);
 
     List<Employee> findByEmailContaining(String email);
+
+    @Query("SELECT CASE WHEN COUNT(e.id) = :size THEN true ELSE false END FROM Employee e WHERE e.id IN :ids")
+    boolean allExistByIds(Set<Long> ids, long size);
 }
