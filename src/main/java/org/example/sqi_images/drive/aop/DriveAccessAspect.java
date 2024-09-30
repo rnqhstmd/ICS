@@ -10,19 +10,20 @@ import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.domain.DriveEmployee;
 import org.example.sqi_images.drive.domain.repository.DriveEmployeeRepository;
+import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.NO_ADMIN_ACCESS_ERROR;
-import static org.example.sqi_images.common.exception.type.ErrorType.NO_DRIVE_ACCESS_ERROR;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class DriveAccessAspect {
 
+    private final DriveService driveService;
     private final AuthenticationContext authenticationContext;
     private final DriveEmployeeRepository driveEmployeeRepository;
 
@@ -40,11 +41,10 @@ public class DriveAccessAspect {
         Long driveId = (Long) args[0];
 
         // 권한 체크 로직 수행
-        DriveEmployee driveEmployee = driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
-                .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
+        DriveEmployee driveAccess = driveService.findExistingAccess(driveId, employeeId);
 
         if (Arrays.stream(checkDriveAccess.accessType())
-                .noneMatch(requiredRole -> driveEmployee.getRole() == requiredRole)) {
+                .noneMatch(requiredRole -> driveAccess.getRole() == requiredRole)) {
             throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
         }
         return joinPoint.proceed();
