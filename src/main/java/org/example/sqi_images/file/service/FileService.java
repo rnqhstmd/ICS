@@ -61,6 +61,11 @@ public class FileService {
         );
     }
 
+    @Transactional
+    public void deleteFile(FileInfo fileInfo) {
+        fileInfoRepository.delete(fileInfo);
+    }
+
     public FileInfo findFileInfoByDriveId(Long fileId, Long driveId) {
         return fileInfoRepository.findByIdAndDriveId(fileId, driveId)
                 .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
