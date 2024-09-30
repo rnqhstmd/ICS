@@ -8,7 +8,6 @@ import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
 import org.example.sqi_images.employee.dto.response.DepartmentProfileList;
 import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
-import org.example.sqi_images.employee.dto.response.ProfileResponseList;
 import org.example.sqi_images.employee.service.ProfileQueryService;
 import org.example.sqi_images.employee.service.ProfileService;
 import org.springframework.http.HttpStatus;
@@ -33,12 +32,6 @@ public class ProfileController {
                                                 @RequestPart(value = "data") @Valid CreateProfileDto createProfileDto) throws IOException {
         profileService.createProfile(employee, createProfileDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body("프로필 생성 완료");
-    }
-
-    @GetMapping
-    public ResponseEntity<ProfileResponseList> getAllProfiles() {
-        ProfileResponseList profiles = profileQueryService.getAllProfiles();
-        return ResponseEntity.ok(profiles);
     }
 
     @GetMapping("/{id}")
