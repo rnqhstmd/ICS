@@ -42,4 +42,14 @@ public class EmployeeDetail extends BaseEntity {
         this.photo = photo;
         this.photoUrl = photoUrl;
     }
+
+    public void updatePhotoInfo(Photo photo, String photoUrl) {
+        this.photo = photo;
+        this.photoUrl = photoUrl;
+    }
+
+    public void updateDetailInfo(String languageType, String frameworkType) {
+        this.languageType = LanguageType.valueOf(languageType);
+        this.frameworkType = FrameworkType.valueOf(frameworkType);
+    }
 }
