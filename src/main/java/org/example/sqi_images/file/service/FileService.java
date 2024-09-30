@@ -65,6 +65,7 @@ public class FileService {
         );
     }
 
+    @Transactional
     public void deleteOldTrashFiles() {
         LocalDateTime thresholdDate = LocalDateTime.now().minusDays(30);
         List<FileInfo> oldTrashFiles = fileInfoRepository.findFilesDeletedOlderThan(thresholdDate);
