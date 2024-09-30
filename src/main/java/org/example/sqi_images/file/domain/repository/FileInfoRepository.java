@@ -17,7 +17,11 @@ public interface FileInfoRepository extends JpaRepository<FileInfo, Long> {
 
     @Query("SELECT f FROM FileInfo f " +
             "JOIN FETCH f.employee e " +
-            "WHERE f.drive.id = :driveId")
+            "WHERE f.drive.id = :driveId AND f.isDeleted = false")
     Page<FileInfo> findByDriveIdWithFetchJoin(@Param("driveId") Long driveId, Pageable pageable);
 
+    @Query("SELECT f FROM FileInfo f " +
+            "JOIN FETCH f.employee e " +
+            "WHERE f.drive.id = :driveId AND f.isDeleted = true")
+    Page<FileInfo> findByDriveIdAndIsDeletedTrue(@Param("driveId") Long driveId, Pageable pageable);
 }
