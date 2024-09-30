@@ -3,6 +3,7 @@ package org.example.sqi_images.drive.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.dto.page.request.PageRequestDto;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
+import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.domain.DriveEmployee;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
 import static org.example.sqi_images.drive.domain.DriveAccessType.ADMIN;
+import static org.example.sqi_images.drive.domain.DriveAccessType.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -110,6 +112,7 @@ public class DriveService {
         return fileService.downloadFile(fileInfo);
     }
 
+    @Transactional(readOnly = true)
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllDriveFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
         Pageable pageable = pageRequestDto.toPageable();
@@ -118,7 +121,34 @@ public class DriveService {
         return new PageResultDto<>(result, FileInfoResponseDto::from);
     }
 
-    private Drive findExistingDrive(Long driveId) {
+    public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
+        Long employeeId = employee.getId();
+
+        FileInfo fileInfo = fileService.findFileInfoByDriveId(fileId, driveId);
+
+        DriveEmployee driveEmployee = findExistingAccess(driveId, employeeId);
+        boolean isAdmin = driveEmployee.getRole() == ADMIN;
+        boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
+
+        // ADMIN 권한이 있거나 (USER 권한자면서 파일 업로더인 경우) 삭제 허용
+        if (!(isAdmin || (driveEmployee.getRole() == USER && isUploader))) {
+            throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
+        }
+        fileService.deleteFile(fileInfo);
+    }
+
+    public DriveEmployee findExistingAccess(Long driveId, Long employeeId) {
+        return driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
+                .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
+    }
+
+    @Transactional
+    public void deleteDrive(Long driveId) {
+        Drive drive = findExistingDrive(driveId);
+        driveRepository.delete(drive);
+    }
+
+    public Drive findExistingDrive(Long driveId) {
         return driveRepository.findById(driveId)
                 .orElseThrow(() -> new NotFoundException(DRIVE_NOT_FOUND_ERROR));
     }
