@@ -3,10 +3,11 @@ package org.example.sqi_images.employee.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
+import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
+import org.example.sqi_images.employee.dto.response.DepartmentProfileList;
 import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
-import org.example.sqi_images.employee.dto.response.ProfileResponseList;
 import org.example.sqi_images.employee.service.ProfileQueryService;
 import org.example.sqi_images.employee.service.ProfileService;
 import org.springframework.http.HttpStatus;
@@ -33,15 +34,15 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body("프로필 생성 완료");
     }
 
-    @GetMapping
-    public ResponseEntity<ProfileResponseList> getAllProfiles() {
-        ProfileResponseList profiles = profileQueryService.getAllProfiles();
-        return ResponseEntity.ok(profiles);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProfileDetailResponse> getProfileDetail(@PathVariable Long id) {
         ProfileDetailResponse profileDetail = profileQueryService.getProfileDetail(id);
         return ResponseEntity.ok(profileDetail);
+    }
+
+    @GetMapping("/departments")
+    public ResponseEntity<DepartmentProfileList> getProfilesGroupedByPart(@RequestParam("departmentType") DepartmentType departmentType) {
+        DepartmentProfileList profileList = profileQueryService.getProfilesGroupedByPart(departmentType);
+        return ResponseEntity.ok(profileList);
     }
 }
