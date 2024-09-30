@@ -123,11 +123,17 @@ public class DriveService {
     }
 
     public void setTrashDriveFile(Employee employee, Long driveId, Long fileId) {
-        Long employeeId = employee.getId();
         FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
 
-        validateAccessOrUploader(driveId, employeeId, fileInfo);
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.setTrashFile(fileInfo);
+    }
+
+    public void restoreTrashDriveFile(Employee employee, Long driveId, Long fileId) {
+        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
+        fileService.restoreFile(fileInfo);
     }
 
     @Transactional(readOnly = true)
@@ -140,10 +146,9 @@ public class DriveService {
     }
 
     public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
-        Long employeeId = employee.getId();
         FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
 
-        validateAccessOrUploader(driveId, employeeId, fileInfo);
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.deleteFile(fileInfo);
     }
 
