@@ -36,7 +36,7 @@ public class DriveController {
             @AuthEmployee Employee employee,
             @RequestBody @Valid CreateDriveDto createDriveDto) {
         driveService.createDrive(employee, createDriveDto);
-        return ResponseEntity.ok("드라이브 생성 완료");
+        return ResponseEntity.ok("공유 드라이브가 성공적으로 생성되었습니다.");
     }
 
     @PostMapping("/{driveId}/files")
@@ -46,7 +46,7 @@ public class DriveController {
             @AuthEmployee Employee employee,
             @RequestParam("file") MultipartFile file) throws IOException {
         driveService.uploadFileToDrive(employee, driveId, file);
-        return ResponseEntity.ok("파일 업로드 성공");
+        return ResponseEntity.ok("공유 드라이브애 파일이 성공적으로 업로드되었습니다.");
     }
 
     @PostMapping("/{driveId}/assign-roles")
@@ -81,20 +81,39 @@ public class DriveController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/{driveId}/files/{fileId}")
+    @GetMapping("/{driveId}/trash-files")
+    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    public ResponseEntity<PageResultDto<FileInfoResponseDto, FileInfo>> getAllDriveTrashFiles(
+            @PathVariable Long driveId,
+            @RequestParam(defaultValue = "1") int page) {
+        PageResultDto<FileInfoResponseDto, FileInfo> result = driveService.getAllTrashFiles(driveId, page);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/{driveId}/files/{fileId}")
+    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    public ResponseEntity<String> setTrashDriveFile(
+            @PathVariable Long driveId,
+            @AuthEmployee Employee employee,
+            @PathVariable Long fileId) {
+        driveService.setTrashDriveFile(employee, driveId, fileId);
+        return ResponseEntity.ok("파일이 휴지통으로 이동되었습니다.");
+    }
+
+    @DeleteMapping("/{driveId}/trash-files/{fileId}")
     @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
     public ResponseEntity<String> deleteDriveFile(
             @PathVariable Long driveId,
             @AuthEmployee Employee employee,
             @PathVariable Long fileId) {
         driveService.deleteDriveFile(employee, driveId, fileId);
-        return ResponseEntity.ok("파일이 성곡적으로 삭제되었습니다.");
+        return ResponseEntity.ok("파일이 영구적으로 삭제되었습니다.");
     }
 
     @DeleteMapping("/{driveId}")
     @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
     public ResponseEntity<String> deleteDrive(@PathVariable Long driveId) {
         driveService.deleteDrive(driveId);
-        return ResponseEntity.ok("드라이브가 성공적으로 삭제되었습니다.");
+        return ResponseEntity.ok("공유 드라이브가 성공적으로 삭제되었습니다.");
     }
 }
