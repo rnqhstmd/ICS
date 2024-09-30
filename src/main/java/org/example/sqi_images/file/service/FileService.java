@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.example.sqi_images.common.exception.type.ErrorType.FILE_NOT_FOUND_ERROR;
@@ -49,6 +51,7 @@ public class FileService {
         return fileInfoRepository.save(fileInfo);
     }
 
+    @Transactional
     public FileDownloadDto downloadFile(FileInfo fileInfo) {
         Long fileId = fileInfo.getFileData().getId();
         FileData fileData = fileDataRepository.findById(fileId)
@@ -60,6 +63,15 @@ public class FileService {
                 fileData.getFileSize(),
                 fileData.getFileBytes()
         );
+    }
+
+    public void deleteOldTrashFiles() {
+        LocalDateTime thresholdDate = LocalDateTime.now().minusDays(30);
+        List<FileInfo> oldTrashFiles = fileInfoRepository.findFilesDeletedOlderThan(thresholdDate);
+
+        if (!oldTrashFiles.isEmpty()) {
+            fileInfoRepository.deleteAllInBatch(oldTrashFiles);
+        }
     }
 
     public void setTrashFile(FileInfo file) {
