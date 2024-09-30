@@ -40,7 +40,7 @@ public class DriveAccessAspect {
         Long driveId = (Long) args[0];
 
         // 권한 체크 로직 수행
-        DriveEmployee driveEmployee = driveEmployeeRepository.findByDriveIdAndEmployeeId(driveId, employeeId)
+        DriveEmployee driveEmployee = driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
                 .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
 
         if (Arrays.stream(checkDriveAccess.accessType())

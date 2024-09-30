@@ -26,4 +26,8 @@ public class DriveEmployee extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private DriveAccessType role;
+
+    public Long getEmployeeId() {
+        return employee.getId();
+    }
 }
