@@ -30,7 +30,7 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "detail_id")
     private EmployeeDetail detail;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DriveEmployee> driveEmployees;
 
     @ManyToOne(fetch = FetchType.LAZY)

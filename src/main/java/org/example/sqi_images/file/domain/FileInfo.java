@@ -24,7 +24,7 @@ public class FileInfo extends BaseEntity {
     @Column(nullable = false)
     private String formattedFileSize;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "fileDataId")
     private FileData fileData;
 
