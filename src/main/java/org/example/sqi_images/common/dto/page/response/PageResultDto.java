@@ -17,7 +17,7 @@ public record PageResultDto<D, E>(
                 result.getContent().stream().map(entityToDtoFunction).toList(),
                 result.getTotalPages(),
                 result.getTotalElements(),
-                result.getNumber(),
+                result.getNumber() + 1,
                 result.getSize()
         );
     }
