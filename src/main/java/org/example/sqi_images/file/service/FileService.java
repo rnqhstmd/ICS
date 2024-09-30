@@ -41,6 +41,7 @@ public class FileService {
                 fileName,
                 getExtension(fileName),
                 formatFileSize(fileSize),
+                false,
                 fileData,
                 employee,
                 drive
@@ -61,13 +62,13 @@ public class FileService {
         );
     }
 
+    public void setTrashFile(FileInfo file) {
+        file.setDeleted(true);
+        fileInfoRepository.save(file);
+    }
+
     @Transactional
     public void deleteFile(FileInfo fileInfo) {
         fileInfoRepository.delete(fileInfo);
-    }
-
-    public FileInfo findFileInfoByDriveId(Long fileId, Long driveId) {
-        return fileInfoRepository.findByIdAndDriveId(fileId, driveId)
-                .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
     }
 }
