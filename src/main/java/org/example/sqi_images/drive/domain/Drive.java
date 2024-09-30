@@ -1,9 +1,6 @@
 package org.example.sqi_images.drive.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +21,10 @@ public class Drive extends BaseEntity {
     @Column(nullable = false)
     private String driveName;
 
-    @OneToMany(mappedBy = "drive")
+    @OneToMany(mappedBy = "drive", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DriveEmployee> driveEmployees;
 
-    @OneToMany(mappedBy = "drive")
+    @OneToMany(mappedBy = "drive", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FileInfo> fileInfos;
 
     public Drive(String driveName) {
