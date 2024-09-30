@@ -6,12 +6,14 @@ import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.part.domain.Part;
 import org.example.sqi_images.part.domain.repository.PartRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.PART_NOT_FOUND_ERROR;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PartService {
+public class PartQueryService {
 
     private final PartRepository partRepository;
 

@@ -9,8 +9,7 @@ import org.example.sqi_images.auth.authentication.AuthenticationContext;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.domain.DriveEmployee;
-import org.example.sqi_images.drive.domain.repository.DriveEmployeeRepository;
-import org.example.sqi_images.drive.service.DriveService;
+import org.example.sqi_images.drive.service.DriveQueryService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +22,8 @@ import static org.example.sqi_images.common.exception.type.ErrorType.NO_ADMIN_AC
 @RequiredArgsConstructor
 public class DriveAccessAspect {
 
-    private final DriveService driveService;
+    private final DriveQueryService driveQueryService;
     private final AuthenticationContext authenticationContext;
-    private final DriveEmployeeRepository driveEmployeeRepository;
 
     @Pointcut("@annotation(checkDriveAccess)")
     public void driveAccessCheckPointcut(CheckDriveAccess checkDriveAccess) {}
@@ -41,7 +39,7 @@ public class DriveAccessAspect {
         Long driveId = (Long) args[0];
 
         // 권한 체크 로직 수행
-        DriveEmployee driveAccess = driveService.findExistingAccess(driveId, employeeId);
+        DriveEmployee driveAccess = driveQueryService.findExistingAccess(driveId, employeeId);
 
         if (Arrays.stream(checkDriveAccess.accessType())
                 .noneMatch(requiredRole -> driveAccess.getRole() == requiredRole)) {

@@ -1,6 +1,7 @@
 package org.example.sqi_images.employee.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.sqi_images.common.exception.ConflictException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.employee.dto.response.SearchEmployeeResponse;
 import org.example.sqi_images.employee.domain.Employee;
@@ -11,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
-import static org.example.sqi_images.common.exception.type.ErrorType.EMPLOYEE_NOT_FOUND_ERROR;
+import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class EmployeeService {
+public class EmployeeQueryService {
 
     private final EmployeeRepository employeeRepository;
 
@@ -26,7 +28,6 @@ public class EmployeeService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public boolean verifyEmployeeIdsExist(Set<Long> employeeIds) {
         return employeeRepository.allExistByIds(employeeIds, employeeIds.size());
     }
@@ -39,5 +40,22 @@ public class EmployeeService {
     public Employee findEmployeeWithDetails(Long employeeId) {
         return employeeRepository.findByIdWithDetail(employeeId)
                 .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+    }
+
+    public Employee findExistingUserByEmail(String email) {
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+    }
+
+    public void validateIsDuplicatedName(String name) {
+        if (employeeRepository.existsByName(name)) {
+            throw new ConflictException(DUPLICATED_NAME);
+        }
+    }
+
+    public void validateIsDuplicatedEmail(String email) {
+        if (employeeRepository.existsByEmail(email)) {
+            throw new ConflictException(DUPLICATED_EMAIL);
+        }
     }
 }

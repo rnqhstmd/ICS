@@ -1,8 +1,6 @@
 package org.example.sqi_images.drive.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.sqi_images.common.dto.page.request.PageRequestDto;
-import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.common.exception.ForbiddenException;
 import org.example.sqi_images.common.exception.NotFoundException;
 import org.example.sqi_images.drive.domain.Drive;
@@ -13,14 +11,10 @@ import org.example.sqi_images.drive.dto.request.AssignRoleRequest;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.employee.domain.Employee;
-import org.example.sqi_images.employee.service.EmployeeService;
+import org.example.sqi_images.employee.service.EmployeeQueryService;
 import org.example.sqi_images.file.domain.FileInfo;
-import org.example.sqi_images.file.domain.repository.FileInfoRepository;
 import org.example.sqi_images.file.dto.response.FileDownloadDto;
-import org.example.sqi_images.file.dto.response.FileInfoResponseDto;
 import org.example.sqi_images.file.service.FileService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +34,8 @@ import static org.example.sqi_images.drive.domain.DriveAccessType.USER;
 public class DriveService {
 
     private final FileService fileService;
-    private final EmployeeService employeeService;
-    private final FileInfoRepository fileInfoRepository;
+    private final EmployeeQueryService employeeQueryService;
+    private final DriveQueryService driveQueryService;
     private final DriveRepository driveRepository;
     private final DriveEmployeeRepository driveEmployeeRepository;
 
@@ -55,7 +49,7 @@ public class DriveService {
 
     @Transactional
     public void assignAndUpdateRoles(Long driveId, AssignRoleRequestList request) {
-        Drive drive = findExistingDrive(driveId);
+        Drive drive = driveQueryService.findExistingDrive(driveId);
 
         // 요청된 employeeIds 추출
         Set<Long> employeeIds = request.employeeRoles().stream()
@@ -68,7 +62,7 @@ public class DriveService {
                 .collect(Collectors.toMap(DriveEmployee::getEmployeeId, Function.identity()));
 
         // 요청된 모든 직원 ID가 실제로 존재하는지 확인
-        if (!employeeService.verifyEmployeeIdsExist(employeeIds)) {
+        if (!employeeQueryService.verifyEmployeeIdsExist(employeeIds)) {
             throw new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR);
         }
 
@@ -86,7 +80,7 @@ public class DriveService {
                 }
             } else {
                 // 존재하지 않는 직원 ID에 대한 처리는 필요 없음, 이미 검사 완료
-                Employee newEmployee = employeeService.findExistingEmployee(assignRoleRequest.employeeId());
+                Employee newEmployee = employeeQueryService.findExistingEmployee(assignRoleRequest.employeeId());
                 toUpdate.add(new DriveEmployee(newEmployee, drive, assignRoleRequest.role()));
             }
         });
@@ -100,7 +94,7 @@ public class DriveService {
     }
 
     public void uploadFileToDrive(Employee employee, Long driveId, MultipartFile file) throws IOException {
-        Drive drive = findExistingDrive(driveId);
+        Drive drive = driveQueryService.findExistingDrive(driveId);
         fileService.saveFile(file, employee, drive);
     }
 
@@ -108,45 +102,27 @@ public class DriveService {
         if (!driveRepository.existsById(driveId)) {
             throw new NotFoundException(DRIVE_NOT_FOUND_ERROR);
         }
-        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+        FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
         return fileService.downloadFile(fileInfo);
     }
 
-    @Transactional(readOnly = true)
-    public PageResultDto<FileInfoResponseDto, FileInfo> getAllDriveFiles(Long driveId, int page) {
-        PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
-        Page<FileInfo> result = fileInfoRepository.findByDriveIdWithFetchJoin(driveId, pageable);
-
-        return new PageResultDto<>(result, FileInfoResponseDto::notDeletedFilesFrom);
-    }
-
     public void setTrashDriveFile(Employee employee, Long driveId, Long fileId) {
-        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+        FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
         validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.setTrashFile(fileInfo);
     }
 
     public void restoreTrashDriveFile(Employee employee, Long driveId, Long fileId) {
-        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+        FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
         validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.restoreFile(fileInfo);
     }
 
-    @Transactional(readOnly = true)
-    public PageResultDto<FileInfoResponseDto, FileInfo> getAllTrashFiles(Long driveId, int page) {
-        PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
-        Page<FileInfo> result = fileInfoRepository.findByDriveIdAndIsDeletedTrue(driveId, pageable);
-
-        return new PageResultDto<>(result, FileInfoResponseDto::deletedFilesFrom);
-    }
-
     public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
-        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+        FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
         validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.deleteFile(fileInfo);
@@ -160,27 +136,12 @@ public class DriveService {
 
     @Transactional
     public void deleteDrive(Long driveId) {
-        Drive drive = findExistingDrive(driveId);
+        Drive drive = driveQueryService.findExistingDrive(driveId);
         driveRepository.delete(drive);
     }
 
-    public DriveEmployee findExistingAccess(Long driveId, Long employeeId) {
-        return driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
-                .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
-    }
-
-    public Drive findExistingDrive(Long driveId) {
-        return driveRepository.findById(driveId)
-                .orElseThrow(() -> new NotFoundException(DRIVE_NOT_FOUND_ERROR));
-    }
-
-    public FileInfo findFileInfoByDriveId(Long fileId, Long driveId) {
-        return fileInfoRepository.findByIdAndDriveId(fileId, driveId)
-                .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
-    }
-
     private void validateAccessOrUploader(Long driveId, Long employeeId, FileInfo fileInfo) {
-        DriveEmployee driveEmployee = findExistingAccess(driveId, employeeId);
+        DriveEmployee driveEmployee = driveQueryService.findExistingAccess(driveId, employeeId);
         boolean isAdmin = driveEmployee.getRole() == ADMIN;
         boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
 
