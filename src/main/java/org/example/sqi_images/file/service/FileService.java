@@ -75,9 +75,14 @@ public class FileService {
         }
     }
 
-    public void setTrashFile(FileInfo file) {
-        file.setDeleted(true);
-        fileInfoRepository.save(file);
+    public void setTrashFile(FileInfo fileInfo) {
+        fileInfo.updateIsDeleted(true);
+        fileInfoRepository.save(fileInfo);
+    }
+
+    public void restoreFile(FileInfo fileInfo) {
+        fileInfo.updateIsDeleted(false);
+        fileInfoRepository.save(fileInfo);
     }
 
     @Transactional
