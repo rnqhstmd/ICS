@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
-import org.example.sqi_images.drive.domain.DriveAccessType;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.drive.service.DriveService;
@@ -22,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static org.example.sqi_images.drive.domain.DriveAccessType.ADMIN;
+import static org.example.sqi_images.drive.domain.DriveAccessType.USER;
 import static org.example.sqi_images.file.util.FileUtil.createFileDownloadHeaders;
 
 @RestController
@@ -40,7 +41,7 @@ public class DriveController {
     }
 
     @PostMapping("/{driveId}/files")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN, USER})
     public ResponseEntity<String> uploadFileToDrive(
             @PathVariable Long driveId,
             @AuthEmployee Employee employee,
@@ -50,7 +51,7 @@ public class DriveController {
     }
 
     @PostMapping("/{driveId}/assign-roles")
-    @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN})
     public ResponseEntity<String> assignRoles(
             @PathVariable Long driveId,
             @RequestBody @Valid AssignRoleRequestList assignRoleRequestList) {
@@ -59,7 +60,7 @@ public class DriveController {
     }
 
     @GetMapping("/{driveId}/files/{fileId}")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN, USER})
     public ResponseEntity<ByteArrayResource> downloadDriveFile(
             @PathVariable Long driveId,
             @PathVariable Long fileId) {
@@ -73,7 +74,7 @@ public class DriveController {
     }
 
     @GetMapping("/{driveId}/files")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN, USER})
     public ResponseEntity<PageResultDto<FileInfoResponseDto, FileInfo>> getAllDriveFiles(
             @PathVariable Long driveId,
             @RequestParam(defaultValue = "1") int page) {
@@ -82,7 +83,7 @@ public class DriveController {
     }
 
     @GetMapping("/{driveId}/trash-files")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN, USER})
     public ResponseEntity<PageResultDto<FileInfoResponseDto, FileInfo>> getAllDriveTrashFiles(
             @PathVariable Long driveId,
             @RequestParam(defaultValue = "1") int page) {
@@ -91,7 +92,7 @@ public class DriveController {
     }
 
     @PostMapping("/{driveId}/files/{fileId}")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {USER, ADMIN})
     public ResponseEntity<String> setTrashDriveFile(
             @PathVariable Long driveId,
             @AuthEmployee Employee employee,
@@ -100,8 +101,18 @@ public class DriveController {
         return ResponseEntity.ok("파일이 휴지통으로 이동되었습니다.");
     }
 
+    @PatchMapping("/{driveId}/trash-files/{fileId}")
+    @CheckDriveAccess(accessType = {ADMIN, USER})
+    public ResponseEntity<String> restoreTrashDriveFile(
+            @PathVariable Long driveId,
+            @AuthEmployee Employee employee,
+            @PathVariable Long fileId) {
+        driveService.restoreTrashDriveFile(employee, driveId, fileId);
+        return ResponseEntity.ok("파일이 드라이브로 복원되었습니다.");
+    }
+
     @DeleteMapping("/{driveId}/trash-files/{fileId}")
-    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN, USER})
     public ResponseEntity<String> deleteDriveFile(
             @PathVariable Long driveId,
             @AuthEmployee Employee employee,
@@ -111,7 +122,7 @@ public class DriveController {
     }
 
     @DeleteMapping("/{driveId}")
-    @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
+    @CheckDriveAccess(accessType = {ADMIN})
     public ResponseEntity<String> deleteDrive(@PathVariable Long driveId) {
         driveService.deleteDrive(driveId);
         return ResponseEntity.ok("공유 드라이브가 성공적으로 삭제되었습니다.");
