@@ -80,4 +80,21 @@ public class DriveController {
         PageResultDto<FileInfoResponseDto, FileInfo> result = driveService.getAllDriveFiles(driveId, page);
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("/{driveId}/files/{fileId}")
+    @CheckDriveAccess(accessType = {DriveAccessType.USER, DriveAccessType.ADMIN})
+    public ResponseEntity<String> deleteDriveFile(
+            @PathVariable Long driveId,
+            @AuthEmployee Employee employee,
+            @PathVariable Long fileId) {
+        driveService.deleteDriveFile(employee, driveId, fileId);
+        return ResponseEntity.ok("파일이 성곡적으로 삭제되었습니다.");
+    }
+
+    @DeleteMapping("/{driveId}")
+    @CheckDriveAccess(accessType = {DriveAccessType.ADMIN})
+    public ResponseEntity<String> deleteDrive(@PathVariable Long driveId) {
+        driveService.deleteDrive(driveId);
+        return ResponseEntity.ok("드라이브가 성공적으로 삭제되었습니다.");
+    }
 }
