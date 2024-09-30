@@ -24,22 +24,6 @@ public class ProfileQueryService {
     private final EmployeeRepository employeeRepository;
 
     /**
-     * 프로필 전체 조회
-     */
-    public ProfileResponseList getAllProfiles() {
-        List<ProfileResponse> profiles = employeeRepository.findAllWithDetail().stream()
-                .map(profile ->
-                        ProfileResponse.of(
-                                profile.getId(),
-                                profile.getName(),
-                                profile.getDetail().getPhotoUrl()
-                        ))
-                .toList();
-
-        return ProfileResponseList.from(profiles);
-    }
-
-    /**
      * 프로필 단건 조회
      */
     public ProfileDetailResponse getProfileDetail(Long employeeId) {
