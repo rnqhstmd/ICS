@@ -7,6 +7,7 @@ import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
 import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponseList;
+import org.example.sqi_images.employee.service.ProfileQueryService;
 import org.example.sqi_images.employee.service.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import java.io.IOException;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final ProfileQueryService profileQueryService;
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createProfile(@AuthEmployee Employee employee,
@@ -33,13 +35,13 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<ProfileResponseList> getAllProfiles() {
-        ProfileResponseList profiles = profileService.getAllProfiles();
+        ProfileResponseList profiles = profileQueryService.getAllProfiles();
         return ResponseEntity.ok(profiles);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProfileDetailResponse> getProfileDetail(@PathVariable Long id) {
-        ProfileDetailResponse profileDetail = profileService.getProfileDetail(id);
+        ProfileDetailResponse profileDetail = profileQueryService.getProfileDetail(id);
         return ResponseEntity.ok(profileDetail);
     }
 }

@@ -2,7 +2,7 @@ package org.example.sqi_images.employee.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.employee.dto.response.SearchEmployeeResponse;
-import org.example.sqi_images.employee.service.EmployeeService;
+import org.example.sqi_images.employee.service.EmployeeQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final EmployeeQueryService employeeQueryService;
 
     @GetMapping("/search")
     public ResponseEntity<List<SearchEmployeeResponse>> searchEmployees(@RequestParam String email) {
-        List<SearchEmployeeResponse> searchEmployeeResponseList = employeeService.searchEmployees(email);
+        List<SearchEmployeeResponse> searchEmployeeResponseList = employeeQueryService.searchEmployees(email);
         return ResponseEntity.ok(searchEmployeeResponseList);
     }
 }

@@ -7,6 +7,7 @@ import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
+import org.example.sqi_images.drive.service.DriveQueryService;
 import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.file.domain.FileInfo;
@@ -31,6 +32,7 @@ import static org.example.sqi_images.file.util.FileUtil.createFileDownloadHeader
 public class DriveController {
 
     private final DriveService driveService;
+    private final DriveQueryService driveQueryService;
 
     @PostMapping
     public ResponseEntity<String> createDrive(
@@ -78,7 +80,7 @@ public class DriveController {
     public ResponseEntity<PageResultDto<FileInfoResponseDto, FileInfo>> getAllDriveFiles(
             @PathVariable Long driveId,
             @RequestParam(defaultValue = "1") int page) {
-        PageResultDto<FileInfoResponseDto, FileInfo> result = driveService.getAllDriveFiles(driveId, page);
+        PageResultDto<FileInfoResponseDto, FileInfo> result = driveQueryService.getAllDriveFiles(driveId, page);
         return ResponseEntity.ok(result);
     }
 
@@ -87,7 +89,7 @@ public class DriveController {
     public ResponseEntity<PageResultDto<FileInfoResponseDto, FileInfo>> getAllDriveTrashFiles(
             @PathVariable Long driveId,
             @RequestParam(defaultValue = "1") int page) {
-        PageResultDto<FileInfoResponseDto, FileInfo> result = driveService.getAllTrashFiles(driveId, page);
+        PageResultDto<FileInfoResponseDto, FileInfo> result = driveQueryService.getAllTrashFiles(driveId, page);
         return ResponseEntity.ok(result);
     }
 
