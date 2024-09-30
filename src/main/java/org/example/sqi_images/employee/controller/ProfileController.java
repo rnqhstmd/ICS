@@ -3,8 +3,10 @@ package org.example.sqi_images.employee.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
+import org.example.sqi_images.common.domain.DepartmentType;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.dto.request.CreateProfileDto;
+import org.example.sqi_images.employee.dto.response.DepartmentProfileList;
 import org.example.sqi_images.employee.dto.response.ProfileDetailResponse;
 import org.example.sqi_images.employee.dto.response.ProfileResponseList;
 import org.example.sqi_images.employee.service.ProfileQueryService;
@@ -43,5 +45,11 @@ public class ProfileController {
     public ResponseEntity<ProfileDetailResponse> getProfileDetail(@PathVariable Long id) {
         ProfileDetailResponse profileDetail = profileQueryService.getProfileDetail(id);
         return ResponseEntity.ok(profileDetail);
+    }
+
+    @GetMapping("/departments")
+    public ResponseEntity<DepartmentProfileList> getProfilesGroupedByPart(@RequestParam("departmentType") DepartmentType departmentType) {
+        DepartmentProfileList profileList = profileQueryService.getProfilesGroupedByPart(departmentType);
+        return ResponseEntity.ok(profileList);
     }
 }
