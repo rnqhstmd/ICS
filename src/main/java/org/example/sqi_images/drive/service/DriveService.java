@@ -21,6 +21,7 @@ import org.example.sqi_images.file.dto.response.FileInfoResponseDto;
 import org.example.sqi_images.file.service.FileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -144,6 +145,12 @@ public class DriveService {
 
         validateAccessOrUploader(driveId, employeeId, fileInfo);
         fileService.deleteFile(fileInfo);
+    }
+
+    // 매일 자정에 30일 지난 파일 삭제 스케쥴러
+    @Scheduled(cron = "0 0 0 * * *")
+    public void scheduleOldTrashFilesDeletion() {
+        fileService.deleteOldTrashFiles();
     }
 
     @Transactional
