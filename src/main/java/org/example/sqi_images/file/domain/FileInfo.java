@@ -24,6 +24,9 @@ public class FileInfo extends BaseEntity {
     @Column(nullable = false)
     private String formattedFileSize;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "fileDataId")
     private FileData fileData;
@@ -35,4 +38,8 @@ public class FileInfo extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driveId")
     private Drive drive;
+
+    public void updateIsDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
 }

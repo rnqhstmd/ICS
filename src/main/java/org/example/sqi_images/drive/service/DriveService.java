@@ -21,6 +21,7 @@ import org.example.sqi_images.file.dto.response.FileInfoResponseDto;
 import org.example.sqi_images.file.service.FileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,7 +108,7 @@ public class DriveService {
         if (!driveRepository.existsById(driveId)) {
             throw new NotFoundException(DRIVE_NOT_FOUND_ERROR);
         }
-        FileInfo fileInfo = fileService.findFileInfoByDriveId(fileId, driveId);
+        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
 
         return fileService.downloadFile(fileInfo);
     }
@@ -118,28 +119,43 @@ public class DriveService {
         Pageable pageable = pageRequestDto.toPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdWithFetchJoin(driveId, pageable);
 
-        return new PageResultDto<>(result, FileInfoResponseDto::from);
+        return new PageResultDto<>(result, FileInfoResponseDto::notDeletedFilesFrom);
+    }
+
+    public void setTrashDriveFile(Employee employee, Long driveId, Long fileId) {
+        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
+        fileService.setTrashFile(fileInfo);
+    }
+
+    public void restoreTrashDriveFile(Employee employee, Long driveId, Long fileId) {
+        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
+
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
+        fileService.restoreFile(fileInfo);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResultDto<FileInfoResponseDto, FileInfo> getAllTrashFiles(Long driveId, int page) {
+        PageRequestDto pageRequestDto = new PageRequestDto(page);
+        Pageable pageable = pageRequestDto.toPageable();
+        Page<FileInfo> result = fileInfoRepository.findByDriveIdAndIsDeletedTrue(driveId, pageable);
+
+        return new PageResultDto<>(result, FileInfoResponseDto::deletedFilesFrom);
     }
 
     public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
-        Long employeeId = employee.getId();
+        FileInfo fileInfo = findFileInfoByDriveId(fileId, driveId);
 
-        FileInfo fileInfo = fileService.findFileInfoByDriveId(fileId, driveId);
-
-        DriveEmployee driveEmployee = findExistingAccess(driveId, employeeId);
-        boolean isAdmin = driveEmployee.getRole() == ADMIN;
-        boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
-
-        // ADMIN 권한이 있거나 (USER 권한자면서 파일 업로더인 경우) 삭제 허용
-        if (!(isAdmin || (driveEmployee.getRole() == USER && isUploader))) {
-            throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
-        }
+        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
         fileService.deleteFile(fileInfo);
     }
 
-    public DriveEmployee findExistingAccess(Long driveId, Long employeeId) {
-        return driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
-                .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
+    // 매일 자정에 30일 지난 파일 삭제 스케쥴러
+    @Scheduled(cron = "0 0 0 * * *")
+    public void scheduleOldTrashFilesDeletion() {
+        fileService.deleteOldTrashFiles();
     }
 
     @Transactional
@@ -148,8 +164,29 @@ public class DriveService {
         driveRepository.delete(drive);
     }
 
+    public DriveEmployee findExistingAccess(Long driveId, Long employeeId) {
+        return driveEmployeeRepository.findByDriveIdAndEmployee_Id(driveId, employeeId)
+                .orElseThrow(() -> new ForbiddenException(NO_DRIVE_ACCESS_ERROR));
+    }
+
     public Drive findExistingDrive(Long driveId) {
         return driveRepository.findById(driveId)
                 .orElseThrow(() -> new NotFoundException(DRIVE_NOT_FOUND_ERROR));
+    }
+
+    public FileInfo findFileInfoByDriveId(Long fileId, Long driveId) {
+        return fileInfoRepository.findByIdAndDriveId(fileId, driveId)
+                .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
+    }
+
+    private void validateAccessOrUploader(Long driveId, Long employeeId, FileInfo fileInfo) {
+        DriveEmployee driveEmployee = findExistingAccess(driveId, employeeId);
+        boolean isAdmin = driveEmployee.getRole() == ADMIN;
+        boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
+
+        // ADMIN 권한이 있거나 USER 권한자면서 파일 업로더인 경우 삭제 허용
+        if (!(isAdmin || (driveEmployee.getRole() == USER && isUploader))) {
+            throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
+        }
     }
 }

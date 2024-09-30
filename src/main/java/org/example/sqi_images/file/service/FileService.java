@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.example.sqi_images.common.exception.type.ErrorType.FILE_NOT_FOUND_ERROR;
@@ -41,6 +43,7 @@ public class FileService {
                 fileName,
                 getExtension(fileName),
                 formatFileSize(fileSize),
+                false,
                 fileData,
                 employee,
                 drive
@@ -48,6 +51,7 @@ public class FileService {
         return fileInfoRepository.save(fileInfo);
     }
 
+    @Transactional
     public FileDownloadDto downloadFile(FileInfo fileInfo) {
         Long fileId = fileInfo.getFileData().getId();
         FileData fileData = fileDataRepository.findById(fileId)
@@ -62,12 +66,27 @@ public class FileService {
     }
 
     @Transactional
-    public void deleteFile(FileInfo fileInfo) {
-        fileInfoRepository.delete(fileInfo);
+    public void deleteOldTrashFiles() {
+        LocalDateTime thresholdDate = LocalDateTime.now().minusDays(30);
+        List<FileInfo> oldTrashFiles = fileInfoRepository.findFilesDeletedOlderThan(thresholdDate);
+
+        if (!oldTrashFiles.isEmpty()) {
+            fileInfoRepository.deleteAllInBatch(oldTrashFiles);
+        }
     }
 
-    public FileInfo findFileInfoByDriveId(Long fileId, Long driveId) {
-        return fileInfoRepository.findByIdAndDriveId(fileId, driveId)
-                .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
+    public void setTrashFile(FileInfo fileInfo) {
+        fileInfo.updateIsDeleted(true);
+        fileInfoRepository.save(fileInfo);
+    }
+
+    public void restoreFile(FileInfo fileInfo) {
+        fileInfo.updateIsDeleted(false);
+        fileInfoRepository.save(fileInfo);
+    }
+
+    @Transactional
+    public void deleteFile(FileInfo fileInfo) {
+        fileInfoRepository.delete(fileInfo);
     }
 }

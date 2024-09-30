@@ -9,17 +9,29 @@ public record FileInfoResponseDto(
         Long fileId,
         String fileName,
         String uploaderName,
-        String uploadedDate,
+        String date,
         String fileExtension,
         String formattedSize
 ) {
-    public static FileInfoResponseDto from(FileInfo file) {
+    public static FileInfoResponseDto notDeletedFilesFrom(FileInfo file) {
         Employee employee = file.getEmployee();
         return new FileInfoResponseDto(
                 file.getId(),
                 file.getFileName(),
                 employee.getName(),
-                file.getCreatedAt().format(DATE_FORMATTER),
+                file.getCreatedAt().format(DATE_FORMATTER), // 업로드 날짜
+                file.getFileExtension(),
+                file.getFormattedFileSize()
+        );
+    }
+
+    public static FileInfoResponseDto deletedFilesFrom(FileInfo file) {
+        Employee employee = file.getEmployee();
+        return new FileInfoResponseDto(
+                file.getId(),
+                file.getFileName(),
+                employee.getName(),
+                file.getModifiedAt().format(DATE_FORMATTER), // 삭제된 날짜
                 file.getFileExtension(),
                 file.getFormattedFileSize()
         );
