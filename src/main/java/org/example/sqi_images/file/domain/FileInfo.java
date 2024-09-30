@@ -39,7 +39,7 @@ public class FileInfo extends BaseEntity {
     @JoinColumn(name = "driveId")
     private Drive drive;
 
-    public void setDeleted(boolean deleted) {
+    public void updateIsDeleted(boolean deleted) {
         isDeleted = deleted;
     }
 }
