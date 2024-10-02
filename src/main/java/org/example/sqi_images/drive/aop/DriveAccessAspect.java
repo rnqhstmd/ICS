@@ -37,6 +37,7 @@ public class DriveAccessAspect {
         // 메서드 파라미터에서 driveId 추출
         Object[] args = joinPoint.getArgs();
         Long driveId = (Long) args[0];
+        driveQueryService.validateExistingDrive(driveId);
 
         // 권한 체크 로직 수행
         DriveEmployee driveAccess = driveQueryService.findExistingAccess(driveId, employeeId);
@@ -45,6 +46,7 @@ public class DriveAccessAspect {
                 .noneMatch(requiredRole -> driveAccess.getRole() == requiredRole)) {
             throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
         }
+
         return joinPoint.proceed();
     }
 }
