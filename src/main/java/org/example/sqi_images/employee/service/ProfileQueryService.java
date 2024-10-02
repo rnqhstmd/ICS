@@ -46,7 +46,8 @@ public class ProfileQueryService {
      * 부서별 파트 소속 사원 프로필 조회
      */
     @Cacheable(value = "departmentProfiles", key = "#departmentType")
-    public DepartmentProfileList getProfilesGroupedByPart(DepartmentType departmentType) {
+    public DepartmentProfileList getProfilesGroupedByPart(String type) {
+        DepartmentType departmentType = DepartmentType.valueOf(type);
         List<Employee> employees = employeeRepository.findAllEmployeeByDepartmentType(departmentType);
 
         Map<PartType, List<ProfileResponse>> groupedProfiles = employees.stream()
