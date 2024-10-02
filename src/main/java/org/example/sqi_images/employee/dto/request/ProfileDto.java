@@ -3,7 +3,7 @@ package org.example.sqi_images.employee.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
-public record CreateProfileDto(
+public record ProfileDto(
         @Schema(description = "부서 타입", example = "AI",
                 allowableValues = {"AI", "SYSTEM", "ENERGY", "MEDIA", "SECURITY", "LAB", "MANAGEMENT"})
         @NotBlank(message = "소속 부서를 입력해주세요.")

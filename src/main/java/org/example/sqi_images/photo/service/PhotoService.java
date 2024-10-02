@@ -25,7 +25,13 @@ public class PhotoService {
         return photoRepository.save(photo);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
+    public void deleteImage(Photo photo) {
+        if (photo != null) {
+            photoRepository.delete(photo);
+        }
+    }
+
     public String generateImageUrl(Long photoId) {
         return baseUrl + "api/images/" + photoId;
     }
