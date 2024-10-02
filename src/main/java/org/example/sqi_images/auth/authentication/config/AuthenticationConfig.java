@@ -29,15 +29,18 @@ public class AuthenticationConfig implements WebMvcConfigurer {
 
     private void addAuthenticationInterceptor(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns(ADD_ADMIN_API_PATH)
                 .addPathPatterns(ADD_AUTH_API_PATH)
                 .addPathPatterns(ADD_PROFILE_API_PATH)
                 .addPathPatterns(ADD_DRIVE_API_PATH)
-                .excludePathPatterns(EXCLUDE_AUTH_API_PATH);
+                .excludePathPatterns(EXCLUDE_AUTH_API_PATH)
+                .order(1);
     }
 
     private void addAdminRoleInterceptor(final InterceptorRegistry registry) {
         registry.addInterceptor(adminRoleInterceptor)
-                .addPathPatterns();
+                .addPathPatterns(ADD_ADMIN_API_PATH)
+                .order(2);
     }
 
     @Override
