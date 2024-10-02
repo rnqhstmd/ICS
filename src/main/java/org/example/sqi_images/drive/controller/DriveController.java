@@ -56,8 +56,9 @@ public class DriveController {
     @CheckDriveAccess(accessType = {ADMIN})
     public ResponseEntity<String> assignRoles(
             @PathVariable Long driveId,
+            @AuthEmployee Employee employee,
             @RequestBody @Valid AssignRoleRequestList assignRoleRequestList) {
-        driveService.assignAndUpdateRoles(driveId, assignRoleRequestList);
+        driveService.assignAndUpdateRoles(employee, driveId, assignRoleRequestList);
         return ResponseEntity.ok("권한이 성공적으로 수정되었습니다.");
     }
 
