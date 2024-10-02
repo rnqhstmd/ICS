@@ -39,16 +39,22 @@ public class DriveService {
     private final DriveRepository driveRepository;
     private final DriveEmployeeRepository driveEmployeeRepository;
 
+    /**
+     * 공유 드라이브 생성
+     */
     public void createDrive(Employee employee, CreateDriveDto createDriveDto) {
         Drive drive = new Drive(createDriveDto.driveName());
         driveRepository.save(drive);
 
-        DriveEmployee driveEmployee = new DriveEmployee(employee, drive, ADMIN);
+        DriveEmployee driveEmployee = new DriveEmployee(employee, drive, ADMIN, employee);
         driveEmployeeRepository.save(driveEmployee);
     }
 
+    /**
+     * 공유 드라이브 권한 부여
+     */
     @Transactional
-    public void assignAndUpdateRoles(Long driveId, AssignRoleRequestList request) {
+    public void assignAndUpdateRoles(Employee granter, Long driveId, AssignRoleRequestList request) {
         Drive drive = driveQueryService.findExistingDrive(driveId);
 
         // 요청된 employeeIds 추출
@@ -76,12 +82,13 @@ public class DriveService {
                     toDelete.add(existingEmployee);
                 } else {
                     existingEmployee.setRole(assignRoleRequest.role());
+                    existingEmployee.setGranter(granter);
                     toUpdate.add(existingEmployee);
                 }
             } else {
                 // 존재하지 않는 직원 ID에 대한 처리는 필요 없음, 이미 검사 완료
                 Employee newEmployee = employeeQueryService.findExistingEmployee(assignRoleRequest.employeeId());
-                toUpdate.add(new DriveEmployee(newEmployee, drive, assignRoleRequest.role()));
+                toUpdate.add(new DriveEmployee(newEmployee, drive, assignRoleRequest.role(), granter));
             }
         });
 
@@ -93,20 +100,27 @@ public class DriveService {
         }
     }
 
+    /**
+     * 공유 드라이브 파일 업로드
+     */
     public void uploadFileToDrive(Employee employee, Long driveId, MultipartFile file) throws IOException {
         Drive drive = driveQueryService.findExistingDrive(driveId);
         fileService.saveFile(file, employee, drive);
     }
 
+    /**
+     * 공유 드라이브 파일 다운로드
+     */
     public FileDownloadDto downloadDriveFile(Long driveId, Long fileId) {
-        if (!driveRepository.existsById(driveId)) {
-            throw new NotFoundException(DRIVE_NOT_FOUND_ERROR);
-        }
+        driveQueryService.validateExistingDrive(driveId);
         FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
         return fileService.downloadFile(fileInfo);
     }
 
+    /**
+     * 공유 드라이브 파일 휴지통 이동
+     */
     public void setTrashDriveFile(Employee employee, Long driveId, Long fileId) {
         FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
@@ -114,6 +128,9 @@ public class DriveService {
         fileService.setTrashFile(fileInfo);
     }
 
+    /**
+     * 공유 드라이브 휴지통 파일 전 드라이브로 복원
+     */
     public void restoreTrashDriveFile(Employee employee, Long driveId, Long fileId) {
         FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
@@ -121,6 +138,9 @@ public class DriveService {
         fileService.restoreFile(fileInfo);
     }
 
+    /**
+     * 공유 드라이브 휴지통 파일 영구 삭제
+     */
     public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
         FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
 
@@ -134,18 +154,21 @@ public class DriveService {
         fileService.deleteOldTrashFiles();
     }
 
+    /**
+     * 공유 드라이브 삭제
+     */
     @Transactional
     public void deleteDrive(Long driveId) {
         Drive drive = driveQueryService.findExistingDrive(driveId);
         driveRepository.delete(drive);
     }
 
+    // ADMIN 권한 보유 or USER 권한자면서 파일 업로더 검증
     private void validateAccessOrUploader(Long driveId, Long employeeId, FileInfo fileInfo) {
         DriveEmployee driveEmployee = driveQueryService.findExistingAccess(driveId, employeeId);
         boolean isAdmin = driveEmployee.getRole() == ADMIN;
         boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
 
-        // ADMIN 권한이 있거나 USER 권한자면서 파일 업로더인 경우 삭제 허용
         if (!(isAdmin || (driveEmployee.getRole() == USER && isUploader))) {
             throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
         }
