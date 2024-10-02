@@ -21,6 +21,9 @@ public class EmployeeQueryService {
 
     private final EmployeeRepository employeeRepository;
 
+    /**
+     * 이메일로 사원 검색
+     */
     public List<SearchEmployeeResponse> searchEmployees(String email) {
         List<Employee> employees = employeeRepository.findByEmailContaining(email);
         return employees.stream()

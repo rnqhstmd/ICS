@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
+import static org.example.sqi_images.employee.domain.EmployeeRole.ADMIN;
 import static org.example.sqi_images.file.util.FileUtil.validaEmptyFile;
 
 @Service
@@ -40,7 +40,7 @@ public class ProfileService {
     @CacheEvict(value = "employeeProfiles", key = "#employee.id")
     public void createProfile(Employee employee,
                               ProfileDto profileDto,
-                              MultipartFile file) throws IOException {
+                              MultipartFile file) {
         validaEmptyFile(file);
         // 프로필 이미 생성했던 직원 검증
         if (detailRepository.existsByEmployeeId(employee.getId())) {
@@ -66,13 +66,22 @@ public class ProfileService {
         employeeRepository.save(employee);
     }
 
+    /**
+     * 프로필 업데이트
+     */
     @CacheEvict(value = "employeeProfiles", key = "#employee.id")
-    public void updateProfile(Long employeeId,
+    public void updateProfile(Employee employee,
+                              Long updateEmployeeId,
                               ProfileDto profileDto,
-                              MultipartFile file) throws IOException {
-        Employee employee = employeeQueryService.findExistingEmployee(employeeId);
+                              MultipartFile file) {
+        // 관리자 검증 & 작성자 검증
+        if (employee.getRole() != ADMIN) {
+            validateUploader(employee.getId(),employee.getId());
+        }
+
+        Employee updateEmployee = employeeQueryService.findExistingEmployee(updateEmployeeId);
         // 생성한 프로필이 없는 직원 검증
-        EmployeeDetail detail = employee.getDetail();
+        EmployeeDetail detail = updateEmployee.getDetail();
         if (detail == null) {
             throw new NotFoundException(PROFILE_NOT_FOUND_ERROR);
         }
@@ -80,7 +89,7 @@ public class ProfileService {
         // 소속 부서, 파트 업데이트
         Part part = partQueryService.findExistingPartByType(
                 PartType.valueOf(profileDto.part()));
-        employee.updatePart(part);
+        updateEmployee.updatePart(part);
 
         // 업데이트할 사진이 있다면 이전 사진 삭제 후 저장
         if (file != null && !file.isEmpty()) {
@@ -96,7 +105,22 @@ public class ProfileService {
 
         detail.updateDetailInfo(profileDto.language(), profileDto.framework());
         EmployeeDetail savedDail = detailRepository.save(detail);
-        employee.setEmployeeDetailInfo(savedDail);
-        employeeRepository.save(employee);
+        updateEmployee.setEmployeeDetailInfo(savedDail);
+        employeeRepository.save(updateEmployee);
+    }
+
+    private static void validateUploader(Long employeeId, Long updateEmployeeId) {
+        if (!employeeId.equals(updateEmployeeId)) {
+            throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
+        }
+    }
+
+    /**
+     * 사원 삭제
+     */
+    @Transactional
+    public void deleteEmployee(Long employeeId) {
+        Employee employeeToDelete = employeeQueryService.findExistingEmployee(employeeId);
+        employeeRepository.delete(employeeToDelete);
     }
 }
