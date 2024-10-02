@@ -7,6 +7,7 @@ import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
+import org.example.sqi_images.drive.dto.response.DriveInfo;
 import org.example.sqi_images.drive.service.DriveQueryService;
 import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_ADMIN;
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_USER;
@@ -40,6 +42,12 @@ public class DriveController {
             @RequestBody @Valid CreateDriveDto createDriveDto) {
         driveService.createDrive(employee, createDriveDto);
         return ResponseEntity.ok("공유 드라이브가 성공적으로 생성되었습니다.");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DriveInfo>> getAllDrives() {
+        List<DriveInfo> allDrives = driveQueryService.getAllDrives();
+        return ResponseEntity.ok(allDrives);
     }
 
     @PostMapping("/{driveId}/files")
