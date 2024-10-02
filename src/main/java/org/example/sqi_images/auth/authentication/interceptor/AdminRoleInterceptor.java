@@ -43,7 +43,7 @@ public class AdminRoleInterceptor implements HandlerInterceptor {
 
         // 관리자 권한이 아닌 경우 처리
         if (employee.getRole() != ADMIN) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "해당 작업은 관리자 권한이 필요합니다.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "해당 작업은 시스템 관리자 권한이 필요합니다.");
             return false;
         }
 
