@@ -26,8 +26,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
-import static org.example.sqi_images.drive.domain.DriveAccessType.ADMIN;
-import static org.example.sqi_images.drive.domain.DriveAccessType.USER;
+import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_ADMIN;
+import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class DriveService {
         Drive drive = new Drive(createDriveDto.driveName());
         driveRepository.save(drive);
 
-        DriveEmployee driveEmployee = new DriveEmployee(employee, drive, ADMIN, employee);
+        DriveEmployee driveEmployee = new DriveEmployee(employee, drive, DRIVE_ADMIN, employee);
         driveEmployeeRepository.save(driveEmployee);
     }
 
@@ -166,10 +166,10 @@ public class DriveService {
     // ADMIN 권한 보유 or USER 권한자면서 파일 업로더 검증
     private void validateAccessOrUploader(Long driveId, Long employeeId, FileInfo fileInfo) {
         DriveEmployee driveEmployee = driveQueryService.findExistingAccess(driveId, employeeId);
-        boolean isAdmin = driveEmployee.getRole() == ADMIN;
+        boolean isAdmin = driveEmployee.getRole() == DRIVE_ADMIN;
         boolean isUploader = fileInfo.getEmployee().getId().equals(employeeId);
 
-        if (!(isAdmin || (driveEmployee.getRole() == USER && isUploader))) {
+        if (!(isAdmin || (driveEmployee.getRole() == DRIVE_USER && isUploader))) {
             throw new ForbiddenException(NO_ADMIN_ACCESS_ERROR);
         }
     }

@@ -1,6 +1,6 @@
 package org.example.sqi_images.drive.domain;
 
 public enum DriveAccessType {
-    ADMIN,
-    USER
+    DRIVE_ADMIN,
+    DRIVE_USER
 }
