@@ -47,6 +47,10 @@ public enum ErrorType {
     PROFILE_ALREADY_EXISTS_ERROR(40902, "프로필이 이미 존재합니다."),
     DUPLICATED_FILE_NAME_ERROR(40903, "이미 존재하는 파일 이름입니다."),
 
+    // INTERNAL_SERVER
+    PASSWORD_ENCRYPT_ERROR(50000, "비밀번호 암호화에 실패했습니다."),
+    IMAGE_UPLOAD_ERROR(50001, "이미지 업로드 중 오류가 발생했습니다."),
+
     // VALIDATION
     NOT_NULL_VALID_ERROR(90100, "필수값이 누락되었습니다."),
     NOT_BLANK_VALID_ERROR(90101, "필수값이 빈 값이거나 공백으로 되어있습니다."),
