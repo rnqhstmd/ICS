@@ -27,6 +27,10 @@ public class DriveEmployee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DriveAccessType role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "granter")
+    private Employee granter;
+
     public Long getEmployeeId() {
         return employee.getId();
     }
