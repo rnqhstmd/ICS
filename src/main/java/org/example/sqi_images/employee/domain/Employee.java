@@ -26,6 +26,10 @@ public class Employee extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EmployeeRole role;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "detail_id")
     private EmployeeDetail detail;
@@ -37,10 +41,11 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "part_id")
     private Part part;
 
-    public Employee(String email, String password, String name) {
+    public Employee(String email, String password, String name, EmployeeRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = role;
     }
 
     public void updatePart(Part part) {

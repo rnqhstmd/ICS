@@ -15,7 +15,7 @@ public enum ErrorType {
     NOT_AUTHENTICATED_ERROR(40100, "인증되지 않았습니다."),
     INVALID_CREDENTIALS_ERROR(40101, "아이디나 비밀번호가 일치하지 않습니다."),
     JWT_NOT_FOUND_ERROR(40102, "인증 정보가 없습니다."),
-    COOKIE_NOT_FOUND_ERROR(40103, "쿠키 정보가 없습니다."),
+    TOKEN_NOT_FOUND_ERROR(40103, "토큰 정보가 없습니다."),
     INVALID_JWT_ERROR(40104, "인증 정보가 유효하지 않습니다."),
     TOKEN_EXPIRED_ERROR(40105, "인증에 필요한 토큰이 만료되었습니다."),
 
