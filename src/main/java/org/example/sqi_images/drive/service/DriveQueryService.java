@@ -28,6 +28,9 @@ public class DriveQueryService {
     private final DriveRepository driveRepository;
     private final DriveEmployeeRepository driveEmployeeRepository;
 
+    /**
+     * 공유 드라이브 파일 전체 조회
+     */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllDriveFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
         Pageable pageable = pageRequestDto.toPageable();
@@ -36,12 +39,21 @@ public class DriveQueryService {
         return new PageResultDto<>(result, FileInfoResponseDto::notDeletedFilesFrom);
     }
 
+    /**
+     * 공유 드라이브 휴지통 파일 전체 조회
+     */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllTrashFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
         Pageable pageable = pageRequestDto.toPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdAndIsDeletedTrue(driveId, pageable);
 
         return new PageResultDto<>(result, FileInfoResponseDto::deletedFilesFrom);
+    }
+
+    public void validateExistingDrive(Long driveId) {
+        if (!driveRepository.existsById(driveId)) {
+            throw new NotFoundException(DRIVE_NOT_FOUND_ERROR);
+        }
     }
 
     public DriveEmployee findExistingAccess(Long driveId, Long employeeId) {
