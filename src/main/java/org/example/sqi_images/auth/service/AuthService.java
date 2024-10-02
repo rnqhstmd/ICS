@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import static org.example.sqi_images.common.constant.Constants.SQISOFT_EMAIL;
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
+import static org.example.sqi_images.employee.domain.EmployeeRole.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class AuthService {
         String plainPassword = registerDto.password();
         String encryptedPassword = passwordHashEncryption.encrypt(plainPassword);
 
-        Employee newEmployee = new Employee(email, encryptedPassword, name);
+        Employee newEmployee = new Employee(email, encryptedPassword, name, USER);
         employeeRepository.save(newEmployee);
     }
 
@@ -46,8 +47,6 @@ public class AuthService {
         String accessToken = accessTokenProvider.createToken(String.valueOf(employee.getId()));
         return new TokenDto(accessToken);
     }
-
-
 
     public void validateIsPasswordMatches(String requestedPassword, String userPassword) {
         if (!passwordHashEncryption.matches(requestedPassword, userPassword)) {
