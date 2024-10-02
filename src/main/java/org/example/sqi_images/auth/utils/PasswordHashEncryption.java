@@ -10,9 +10,11 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
+import static org.example.sqi_images.common.constant.Constants.PBKDF2_WITH_SHA1;
+
 @Component
 public class PasswordHashEncryption {
-    private static final String PBKDF2_WITH_SHA1 = "PBKDF2WithHmacSHA1";
+
     private final String salt;
     private final int iterationCount;
     private final int keyLength;
