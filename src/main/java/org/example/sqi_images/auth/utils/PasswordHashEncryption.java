@@ -1,5 +1,6 @@
 package org.example.sqi_images.auth.utils;
 
+import org.example.sqi_images.common.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 
 import static org.example.sqi_images.common.constant.Constants.PBKDF2_WITH_SHA1;
+import static org.example.sqi_images.common.exception.type.ErrorType.PASSWORD_ENCRYPT_ERROR;
 
 @Component
 public class PasswordHashEncryption {
@@ -37,7 +39,7 @@ public class PasswordHashEncryption {
                     .withoutPadding()
                     .encodeToString(encodedPassword);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException("Cannot encrypt password");
+            throw new InternalServerException(PASSWORD_ENCRYPT_ERROR);
         }
     }
 
