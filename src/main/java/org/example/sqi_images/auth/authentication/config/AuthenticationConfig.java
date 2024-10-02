@@ -2,6 +2,7 @@ package org.example.sqi_images.auth.authentication.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.argumentresolver.AuthenticatedEmployeeArgumentResolver;
+import org.example.sqi_images.auth.authentication.interceptor.AdminRoleInterceptor;
 import org.example.sqi_images.auth.authentication.interceptor.AuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -17,11 +18,13 @@ import static org.example.sqi_images.common.constant.Constants.*;
 public class AuthenticationConfig implements WebMvcConfigurer {
 
     private final AuthenticationInterceptor authenticationInterceptor;
+    private final AdminRoleInterceptor adminRoleInterceptor;
     private final AuthenticatedEmployeeArgumentResolver authenticatedEmployeeArgumentResolver;
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         addAuthenticationInterceptor(registry);
+        addAdminRoleInterceptor(registry);
     }
 
     private void addAuthenticationInterceptor(final InterceptorRegistry registry) {
@@ -30,6 +33,11 @@ public class AuthenticationConfig implements WebMvcConfigurer {
                 .addPathPatterns(ADD_PROFILE_API_PATH)
                 .addPathPatterns(ADD_DRIVE_API_PATH)
                 .excludePathPatterns(EXCLUDE_AUTH_API_PATH);
+    }
+
+    private void addAdminRoleInterceptor(final InterceptorRegistry registry) {
+        registry.addInterceptor(adminRoleInterceptor)
+                .addPathPatterns();
     }
 
     @Override
