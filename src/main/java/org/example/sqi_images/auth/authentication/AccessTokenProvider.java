@@ -4,7 +4,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.example.sqi_images.common.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,9 +14,9 @@ import java.util.Date;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.INVALID_JWT_ERROR;
 
-@Slf4j
 @Component
 public class AccessTokenProvider {
+
     private final SecretKey key; // AccessToken 시크릿 키
     private final long validityInMilliseconds; // AccessToken 유효 시간
 
