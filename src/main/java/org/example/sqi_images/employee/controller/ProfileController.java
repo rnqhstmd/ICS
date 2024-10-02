@@ -41,8 +41,8 @@ public class ProfileController {
     }
 
     @GetMapping("/departments")
-    public ResponseEntity<DepartmentProfileList> getProfilesGroupedByPart(@RequestParam("departmentType") DepartmentType departmentType) {
-        DepartmentProfileList profileList = profileQueryService.getProfilesGroupedByPart(departmentType);
+    public ResponseEntity<DepartmentProfileList> getProfilesGroupedByPart(@RequestParam("departmentType") String type) {
+        DepartmentProfileList profileList = profileQueryService.getProfilesGroupedByPart(type);
         return ResponseEntity.ok(profileList);
     }
 
