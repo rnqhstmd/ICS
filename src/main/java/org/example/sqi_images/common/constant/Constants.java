@@ -15,6 +15,7 @@ public class Constants {
     public static final String ADD_AUTH_API_PATH = "/api/auth/logout";
     public static final String ADD_PROFILE_API_PATH = "/api/profiles/**";
     public static final List<String> EXCLUDE_AUTH_API_PATH = List.of("/api/auth/login", "/api/auth/sign-up");
+    public static final String PBKDF2_WITH_SHA1 = "PBKDF2WithHmacSHA1";
 
     // Drive
     public static final String ADD_DRIVE_API_PATH = "/api/drives/**";
