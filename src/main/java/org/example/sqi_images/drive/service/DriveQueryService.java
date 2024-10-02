@@ -9,6 +9,7 @@ import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.domain.DriveEmployee;
 import org.example.sqi_images.drive.domain.repository.DriveEmployeeRepository;
 import org.example.sqi_images.drive.domain.repository.DriveRepository;
+import org.example.sqi_images.drive.dto.response.DriveInfo;
 import org.example.sqi_images.file.domain.FileInfo;
 import org.example.sqi_images.file.domain.repository.FileInfoRepository;
 import org.example.sqi_images.file.dto.response.FileInfoResponseDto;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
@@ -27,6 +30,13 @@ public class DriveQueryService {
     private final FileInfoRepository fileInfoRepository;
     private final DriveRepository driveRepository;
     private final DriveEmployeeRepository driveEmployeeRepository;
+
+    /**
+     * 공유 드라이브 전체 조회
+     */
+    public List<DriveInfo> getAllDrives() {
+        return driveRepository.findAllDrivesWithEmployeeCount();
+    }
 
     /**
      * 공유 드라이브 파일 전체 조회
