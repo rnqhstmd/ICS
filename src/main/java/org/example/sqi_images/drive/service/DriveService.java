@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_ADMIN;
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_USER;
+import static org.example.sqi_images.employee.domain.EmployeeRole.ADMIN;
 
 @Service
 @RequiredArgsConstructor
@@ -143,8 +144,9 @@ public class DriveService {
      */
     public void deleteDriveFile(Employee employee, Long driveId, Long fileId) {
         FileInfo fileInfo = driveQueryService.findFileInfoByDriveId(fileId, driveId);
-
-        validateAccessOrUploader(driveId, employee.getId(), fileInfo);
+        if (employee.getRole() != ADMIN) {
+            validateAccessOrUploader(driveId, employee.getId(), fileInfo);
+        }
         fileService.deleteFile(fileInfo);
     }
 
