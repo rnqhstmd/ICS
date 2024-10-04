@@ -31,7 +31,7 @@ public class EmployeeDetail extends BaseEntity {
     @JoinColumn(name = "employee_id", unique = true)
     private Employee employee;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "photo_id")
     private Photo photo;
 

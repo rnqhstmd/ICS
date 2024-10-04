@@ -76,7 +76,7 @@ public class ProfileService {
                               MultipartFile file) {
         // 관리자 검증 & 작성자 검증
         if (employee.getRole() != ADMIN) {
-            validateUploader(employee.getId(),employee.getId());
+            validateUploader(employee.getId(),updateEmployeeId);
         }
 
         Employee updateEmployee = employeeQueryService.findExistingEmployee(updateEmployeeId);
@@ -93,13 +93,13 @@ public class ProfileService {
 
         // 업데이트할 사진이 있다면 이전 사진 삭제 후 저장
         if (file != null && !file.isEmpty()) {
+            Photo newPhoto = photoService.saveImage(file);
+            String newPhotoUrl = photoService.generateImageUrl(newPhoto.getId());
+
             Photo oldPhoto = detail.getPhoto();
             if (oldPhoto != null) {
                 photoService.deleteImage(oldPhoto);
             }
-
-            Photo newPhoto = photoService.saveImage(file);
-            String newPhotoUrl = photoService.generateImageUrl(newPhoto.getId());
             detail.updatePhotoInfo(newPhoto, newPhotoUrl);
         }
 
