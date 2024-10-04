@@ -58,7 +58,7 @@ public class FileService {
                 .orElseThrow(() -> new NotFoundException(FILE_NOT_FOUND_ERROR));
 
         return FileDownloadDto.of(
-                fileInfo.getFileName(),
+                fileInfo.getName(),
                 fileData.getFileContentType(),
                 fileData.getFileSize(),
                 fileData.getFileBytes()

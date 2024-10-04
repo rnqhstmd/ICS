@@ -17,10 +17,10 @@ public record FileInfoResponseDto(
         Employee employee = file.getEmployee();
         return new FileInfoResponseDto(
                 file.getId(),
-                file.getFileName(),
+                file.getName(),
                 employee.getName(),
                 file.getCreatedAt().format(DATE_FORMATTER), // 업로드 날짜
-                file.getFileExtension(),
+                file.getExtension(),
                 file.getFormattedFileSize()
         );
     }
@@ -29,10 +29,10 @@ public record FileInfoResponseDto(
         Employee employee = file.getEmployee();
         return new FileInfoResponseDto(
                 file.getId(),
-                file.getFileName(),
+                file.getName(),
                 employee.getName(),
                 file.getModifiedAt().format(DATE_FORMATTER), // 삭제된 날짜
-                file.getFileExtension(),
+                file.getExtension(),
                 file.getFormattedFileSize()
         );
     }

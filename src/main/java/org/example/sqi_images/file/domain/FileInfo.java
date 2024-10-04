@@ -16,10 +16,10 @@ import org.example.sqi_images.employee.domain.Employee;
 public class FileInfo extends BaseEntity {
 
     @Column(nullable = false)
-    private String fileName;
+    private String name;
 
     @Column(nullable = false)
-    private String fileExtension;
+    private String extension;
 
     @Column(nullable = false)
     private String formattedFileSize;
