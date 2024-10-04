@@ -19,7 +19,7 @@ import java.util.List;
 public class Drive extends BaseEntity {
 
     @Column(nullable = false)
-    private String driveName;
+    private String name;
 
     @OneToMany(mappedBy = "drive", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DriveEmployee> driveEmployees;
@@ -27,7 +27,7 @@ public class Drive extends BaseEntity {
     @OneToMany(mappedBy = "drive", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FileInfo> fileInfos;
 
-    public Drive(String driveName) {
-        this.driveName = driveName;
+    public Drive(String name) {
+        this.name = name;
     }
 }
