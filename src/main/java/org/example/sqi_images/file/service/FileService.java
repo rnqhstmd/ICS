@@ -31,7 +31,7 @@ public class FileService {
     @Transactional
     public FileInfo saveFile(MultipartFile file, Employee employee, Drive drive) throws IOException {
         String fileName = file.getOriginalFilename();
-        validateDuplicatedFileName(fileInfoRepository.existsByFileName(fileName));
+        validateDuplicatedFileName(fileInfoRepository.existsByName(fileName));
         String contentType = file.getContentType();
         long fileSize = file.getSize();
         byte[] fileBytes = file.getBytes();
