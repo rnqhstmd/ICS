@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
+import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
+import org.example.sqi_images.drive.dto.response.DriveInfo;
 import org.example.sqi_images.drive.service.DriveQueryService;
 import org.example.sqi_images.drive.service.DriveService;
 import org.example.sqi_images.employee.domain.Employee;
@@ -40,6 +42,12 @@ public class DriveController {
             @RequestBody @Valid CreateDriveDto createDriveDto) {
         driveService.createDrive(employee, createDriveDto);
         return ResponseEntity.ok("공유 드라이브가 성공적으로 생성되었습니다.");
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResultDto<DriveInfo, Drive>> getAllDrives(@RequestParam(defaultValue = "1") int page) {
+        PageResultDto<DriveInfo, Drive> result = driveQueryService.getAllDrives(page);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{driveId}/files")

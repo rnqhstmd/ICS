@@ -9,6 +9,7 @@ import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.domain.DriveEmployee;
 import org.example.sqi_images.drive.domain.repository.DriveEmployeeRepository;
 import org.example.sqi_images.drive.domain.repository.DriveRepository;
+import org.example.sqi_images.drive.dto.response.DriveInfo;
 import org.example.sqi_images.file.domain.FileInfo;
 import org.example.sqi_images.file.domain.repository.FileInfoRepository;
 import org.example.sqi_images.file.dto.response.FileInfoResponseDto;
@@ -29,11 +30,22 @@ public class DriveQueryService {
     private final DriveEmployeeRepository driveEmployeeRepository;
 
     /**
+     * 공유 드라이브 전체 조회
+     */
+    public PageResultDto<DriveInfo, Drive> getAllDrives(int page) {
+        PageRequestDto pageRequestDto = new PageRequestDto(page);
+        Pageable pageable = pageRequestDto.toNameAscPageable();
+        Page<Drive> result = driveRepository.findAll(pageable);
+
+        return new PageResultDto<>(result, DriveInfo::from);
+    }
+
+    /**
      * 공유 드라이브 파일 전체 조회
      */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllDriveFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
+        Pageable pageable = pageRequestDto.toCurrentPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdWithFetchJoin(driveId, pageable);
 
         return new PageResultDto<>(result, FileInfoResponseDto::notDeletedFilesFrom);
@@ -44,7 +56,7 @@ public class DriveQueryService {
      */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllTrashFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
+        Pageable pageable = pageRequestDto.toCurrentPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdAndIsDeletedTrue(driveId, pageable);
 
         return new PageResultDto<>(result, FileInfoResponseDto::deletedFilesFrom);
