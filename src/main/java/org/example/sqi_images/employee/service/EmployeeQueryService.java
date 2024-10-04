@@ -3,6 +3,7 @@ package org.example.sqi_images.employee.service;
 import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.common.exception.ConflictException;
 import org.example.sqi_images.common.exception.NotFoundException;
+import org.example.sqi_images.common.exception.UnauthorizedException;
 import org.example.sqi_images.employee.dto.response.SearchEmployeeResponse;
 import org.example.sqi_images.employee.domain.Employee;
 import org.example.sqi_images.employee.domain.repository.EmployeeRepository;
@@ -47,7 +48,7 @@ public class EmployeeQueryService {
 
     public Employee findExistingUserByEmail(String email) {
         return employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(EMPLOYEE_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new UnauthorizedException(INVALID_CREDENTIALS_ERROR));
     }
 
     public void validateIsDuplicatedName(String name) {
