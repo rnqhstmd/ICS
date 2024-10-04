@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface FileInfoRepository extends JpaRepository<FileInfo, Long> {
 
-    boolean existsByFileName(String fileName);
+    boolean existsByName(String fileName);
 
     Optional<FileInfo> findByIdAndDriveId(Long fileInfoId, Long driveId);
 
