@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.example.sqi_images.common.exception.type.ErrorType.*;
 
 @Service
@@ -34,8 +32,12 @@ public class DriveQueryService {
     /**
      * 공유 드라이브 전체 조회
      */
-    public List<DriveInfo> getAllDrives() {
-        return driveRepository.findAllDrivesWithEmployeeCount();
+    public PageResultDto<DriveInfo, Drive> getAllDrives(int page) {
+        PageRequestDto pageRequestDto = new PageRequestDto(page);
+        Pageable pageable = pageRequestDto.toNameAscPageable();
+        Page<Drive> result = driveRepository.findAll(pageable);
+
+        return new PageResultDto<>(result, DriveInfo::from);
     }
 
     /**
@@ -43,7 +45,7 @@ public class DriveQueryService {
      */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllDriveFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
+        Pageable pageable = pageRequestDto.toCurrentPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdWithFetchJoin(driveId, pageable);
 
         return new PageResultDto<>(result, FileInfoResponseDto::notDeletedFilesFrom);
@@ -54,7 +56,7 @@ public class DriveQueryService {
      */
     public PageResultDto<FileInfoResponseDto, FileInfo> getAllTrashFiles(Long driveId, int page) {
         PageRequestDto pageRequestDto = new PageRequestDto(page);
-        Pageable pageable = pageRequestDto.toPageable();
+        Pageable pageable = pageRequestDto.toCurrentPageable();
         Page<FileInfo> result = fileInfoRepository.findByDriveIdAndIsDeletedTrue(driveId, pageable);
 
         return new PageResultDto<>(result, FileInfoResponseDto::deletedFilesFrom);
