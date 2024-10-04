@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.sqi_images.auth.authentication.annotation.AuthEmployee;
 import org.example.sqi_images.common.dto.page.response.PageResultDto;
 import org.example.sqi_images.drive.aop.annotation.CheckDriveAccess;
+import org.example.sqi_images.drive.domain.Drive;
 import org.example.sqi_images.drive.dto.request.AssignRoleRequestList;
 import org.example.sqi_images.drive.dto.request.CreateDriveDto;
 import org.example.sqi_images.drive.dto.response.DriveInfo;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_ADMIN;
 import static org.example.sqi_images.drive.domain.DriveAccessType.DRIVE_USER;
@@ -45,9 +45,9 @@ public class DriveController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DriveInfo>> getAllDrives() {
-        List<DriveInfo> allDrives = driveQueryService.getAllDrives();
-        return ResponseEntity.ok(allDrives);
+    public ResponseEntity<PageResultDto<DriveInfo, Drive>> getAllDrives(@RequestParam(defaultValue = "1") int page) {
+        PageResultDto<DriveInfo, Drive> result = driveQueryService.getAllDrives(page);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{driveId}/files")
