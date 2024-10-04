@@ -19,10 +19,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByEmail(String email);
 
     @Query("SELECT e FROM Employee e " +
-            "JOIN FETCH e.detail")
-    List<Employee> findAllWithDetail();
-
-    @Query("SELECT e FROM Employee e " +
             "JOIN FETCH e.detail " +
             "WHERE e.id = :id")
     Optional<Employee> findByIdWithDetail(@Param("id") Long id);
